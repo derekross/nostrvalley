@@ -2,7 +2,7 @@
 // It is important that all functionality in this file is preserved, and should only be modified if explicitly requested.
 
 import { useState } from 'react';
-import { User, UserPlus } from 'lucide-react';
+import { User } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import LoginDialog from './LoginDialog';
 import SignupDialog from './SignupDialog';
@@ -12,9 +12,10 @@ import { cn } from '@/lib/utils';
 
 export interface LoginAreaProps {
   className?: string;
+  compact?: boolean;
 }
 
-export function LoginArea({ className }: LoginAreaProps) {
+export function LoginArea({ className, compact = false }: LoginAreaProps) {
   const { currentUser } = useLoggedInAccounts();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [signupDialogOpen, setSignupDialogOpen] = useState(false);
@@ -29,22 +30,13 @@ export function LoginArea({ className }: LoginAreaProps) {
       {currentUser ? (
         <AccountSwitcher onAddAccountClick={() => setLoginDialogOpen(true)} />
       ) : (
-        <div className="flex gap-3 justify-center">
-          <Button
-            onClick={() => setLoginDialogOpen(true)}
-            className='flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in'
-          >
-            <User className='w-4 h-4' />
-            <span className='truncate'>Log in</span>
-          </Button><Button
-            onClick={() => setSignupDialogOpen(true)}
-            variant="outline"
-            className="flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Sign Up</span>
-          </Button>
-        </div>
+        <Button
+          onClick={() => setLoginDialogOpen(true)}
+          className='flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in'
+        >
+          <User className='w-4 h-4' />
+          <span className='truncate'>{compact ? 'Login' : 'Login/Sign up'}</span>
+        </Button>
       )}
 
       <LoginDialog

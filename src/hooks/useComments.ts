@@ -1,13 +1,14 @@
 import { NKinds, NostrEvent, NostrFilter } from '@nostrify/nostrify';
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
+import { multiRelayQuery } from '@/lib/nostrUtils';
 
 export function useComments(root: NostrEvent | URL, limit?: number) {
   const { nostr } = useNostr();
 
   return useQuery({
     queryKey: ['comments', root instanceof URL ? root.toString() : root.id, limit],
-    queryFn: async (c) => {
+    queryFn: async (_c) => {
       const filter: NostrFilter = { kinds: [1111] };
 
       if (root instanceof URL) {
@@ -26,8 +27,8 @@ export function useComments(root: NostrEvent | URL, limit?: number) {
       }
 
       // Query for all kind 1111 comments that reference this addressable event regardless of depth
-      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
-      const events = await nostr.query([filter], { signal });
+      console.log('Fetching comments from multiple relays for:', root instanceof URL ? root.toString() : root.id);
+      const events = await multiRelayQuery(nostr, [filter], { timeout: 6000, maxRelays: 4 });
 
       // Helper function to get tag value
       const getTagValue = (event: NostrEvent, tagName: string): string | undefined => {
@@ -57,7 +58,7 @@ export function useComments(root: NostrEvent | URL, limit?: number) {
         });
 
         const allDescendants = [...directReplies];
-        
+
         // Recursively get descendants of each direct reply
         for (const reply of directReplies) {
           allDescendants.push(...getDescendants(reply.id));

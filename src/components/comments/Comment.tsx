@@ -26,10 +26,10 @@ interface CommentProps {
 export function Comment({ root, comment, depth = 0, maxDepth = 3, limit }: CommentProps) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showReplies, setShowReplies] = useState(depth < 2); // Auto-expand first 2 levels
-  
+
   const author = useAuthor(comment.pubkey);
   const { data: commentsData } = useComments(root, limit);
-  
+
   const metadata = author.data?.metadata;
   const displayName = metadata?.name ?? genUserName(comment.pubkey)
   const timeAgo = formatDistanceToNow(new Date(comment.created_at * 1000), { addSuffix: true });
@@ -55,7 +55,7 @@ export function Comment({ root, comment, depth = 0, maxDepth = 3, limit }: Comme
                   </Avatar>
                 </Link>
                 <div>
-                  <Link 
+                  <Link
                     to={`/${nip19.npubEncode(comment.pubkey)}`}
                     className="font-medium text-sm hover:text-primary transition-colors"
                   >
@@ -83,7 +83,7 @@ export function Comment({ root, comment, depth = 0, maxDepth = 3, limit }: Comme
                   <MessageSquare className="h-3 w-3 mr-1" />
                   Reply
                 </Button>
-                
+
                 {hasReplies && (
                   <Collapsible open={showReplies} onOpenChange={setShowReplies}>
                     <CollapsibleTrigger asChild>

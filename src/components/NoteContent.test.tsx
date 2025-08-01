@@ -124,6 +124,11 @@ describe('NoteContent', () => {
     const mention = screen.getByRole('link');
     expect(mention).toBeInTheDocument();
     
+    // Should link to njump.me with the npub
+    expect(mention).toHaveAttribute('href', 'https://njump.me/npub1zg69v7ys40x77y352eufp27daufrg4ncjz4ummcjx3t83y9tehhsqepuh0');
+    expect(mention).toHaveAttribute('target', '_blank');
+    expect(mention).toHaveAttribute('rel', 'noopener noreferrer');
+    
     // Should have muted styling for generated names (gray instead of blue)
     expect(mention).toHaveClass('text-gray-500');
     expect(mention).not.toHaveClass('text-blue-500');

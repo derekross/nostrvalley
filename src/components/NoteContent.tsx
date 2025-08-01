@@ -5,23 +5,48 @@ import { nip19 } from 'nostr-tools';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
 import { cn } from '@/lib/utils';
+import { EventPreview } from './EventPreview';
 
 interface NoteContentProps {
   event: NostrEvent;
   className?: string;
+  hiddenUrls?: string[]; // URLs that are already displayed as media
 }
 
 /** Parses content of text note events so that URLs and hashtags are linkified. */
 export function NoteContent({
   event, 
-  className, 
+  className,
+  hiddenUrls = [],
 }: NoteContentProps) {  
   // Process the content to render mentions, links, etc.
   const content = useMemo(() => {
-    const text = event.content;
+    let text = event.content;
     
-    // Regex to find URLs, Nostr references, and hashtags
-    const regex = /(https?:\/\/[^\s]+)|nostr:(npub1|note1|nprofile1|nevent1)([023456789acdefghjklmnpqrstuvwxyz]+)|(#\w+)/g;
+    // Remove URLs that are already displayed as media
+    if (hiddenUrls.length > 0) {
+      hiddenUrls.forEach(url => {
+        text = text.replace(new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '');
+      });
+      // Clean up extra whitespace
+      text = text.replace(/\s+/g, ' ').trim();
+    }
+    
+    // Get tagged users from p tags for potential replacements
+    const taggedUsers = new Map<string, string>();
+    event.tags
+      .filter(tag => tag[0] === 'p' && tag[1])
+      .forEach(tag => {
+        const pubkey = tag[1];
+        // If there's a petname in the tag, use it as a hint
+        const petname = tag[3];
+        if (petname) {
+          taggedUsers.set(pubkey, petname);
+        }
+      });
+    
+    // Regex to find URLs, Nostr references, hashtags, and @ mentions
+    const regex = /(https?:\/\/[^\s]+)|(?:nostr:)?(npub1|note1|nprofile1|nevent1|naddr1)([023456789acdefghjklmnpqrstuvwxyz]+)|(#\w+)|(@[a-zA-Z0-9_]+)/g;
     
     const parts: React.ReactNode[] = [];
     let lastIndex = 0;
@@ -29,7 +54,7 @@ export function NoteContent({
     let keyCounter = 0;
     
     while ((match = regex.exec(text)) !== null) {
-      const [fullMatch, url, nostrPrefix, nostrData, hashtag] = match;
+      const [fullMatch, url, nostrPrefix, nostrData, hashtag, atMention] = match;
       const index = match.index;
       
       // Add text before this match
@@ -58,8 +83,20 @@ export function NoteContent({
           
           if (decoded.type === 'npub') {
             const pubkey = decoded.data;
+            const petname = taggedUsers.get(pubkey);
             parts.push(
-              <NostrMention key={`mention-${keyCounter++}`} pubkey={pubkey} />
+              <NostrMention key={`mention-${keyCounter++}`} pubkey={pubkey} petname={petname} />
+            );
+          } else if (decoded.type === 'nprofile') {
+            const pubkey = decoded.data.pubkey;
+            const petname = taggedUsers.get(pubkey);
+            parts.push(
+              <NostrMention key={`mention-${keyCounter++}`} pubkey={pubkey} petname={petname} />
+            );
+          } else if (decoded.type === 'nevent') {
+            // Render nevent as an embedded preview
+            parts.push(
+              <EventPreview key={`event-${keyCounter++}`} neventId={nostrId} className="my-3" />
             );
           } else {
             // For other types, just show as a link
@@ -89,6 +126,24 @@ export function NoteContent({
             {hashtag}
           </Link>
         );
+      } else if (atMention) {
+        // Handle @ mentions - try to match with tagged users
+        const mentionName = atMention.slice(1); // Remove the @
+        const matchingPubkey = Array.from(taggedUsers.entries())
+          .find(([, petname]) => petname?.toLowerCase() === mentionName.toLowerCase())?.[0];
+        
+        if (matchingPubkey) {
+          parts.push(
+            <NostrMention key={`mention-${keyCounter++}`} pubkey={matchingPubkey} petname={mentionName} />
+          );
+        } else {
+          // If no match found, render as regular text (might be a non-Nostr mention)
+          parts.push(
+            <span key={`text-mention-${keyCounter++}`} className="text-muted-foreground">
+              {atMention}
+            </span>
+          );
+        }
       }
       
       lastIndex = index + fullMatch.length;
@@ -105,7 +160,7 @@ export function NoteContent({
     }
     
     return parts;
-  }, [event]);
+  }, [event.content, event.tags, hiddenUrls]);
 
   return (
     <div className={cn("whitespace-pre-wrap break-words", className)}>
@@ -115,23 +170,27 @@ export function NoteContent({
 }
 
 // Helper component to display user mentions
-function NostrMention({ pubkey }: { pubkey: string }) {
+function NostrMention({ pubkey, petname }: { pubkey: string; petname?: string }) {
   const author = useAuthor(pubkey);
   const npub = nip19.npubEncode(pubkey);
   const hasRealName = !!author.data?.metadata?.name;
-  const displayName = author.data?.metadata?.name ?? genUserName(pubkey);
+  
+  // Use display name priority: 1) Profile name, 2) Petname from tag, 3) Generated name
+  const displayName = author.data?.metadata?.name ?? petname ?? genUserName(pubkey);
 
   return (
-    <Link 
-      to={`/${npub}`}
+    <a 
+      href={`https://njump.me/${npub}`}
+      target="_blank"
+      rel="noopener noreferrer"
       className={cn(
         "font-medium hover:underline",
         hasRealName 
-          ? "text-blue-500" 
+          ? "text-purple-600 hover:text-purple-700" 
           : "text-gray-500 hover:text-gray-700"
       )}
     >
       @{displayName}
-    </Link>
+    </a>
   );
 }
