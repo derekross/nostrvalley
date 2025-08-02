@@ -13,10 +13,10 @@ export interface MediaItem {
 // Extract media from NIP-68 Picture events (kind 20)
 export function extractNIP68Media(event: NostrEvent): MediaItem[] {
   const media: MediaItem[] = [];
-  
+
   // Get title from tags
   const title = event.tags.find(tag => tag[0] === 'title')?.[1];
-  
+
   // Extract imeta tags
   event.tags.forEach(tag => {
     if (tag[0] === 'imeta') {
@@ -25,7 +25,7 @@ export function extractNIP68Media(event: NostrEvent): MediaItem[] {
         type: 'image', // NIP-68 is picture-first
         title,
       };
-      
+
       // Parse imeta tag properties
       for (let i = 1; i < tag.length; i++) {
         const prop = tag[i];
@@ -47,41 +47,42 @@ export function extractNIP68Media(event: NostrEvent): MediaItem[] {
           mediaItem.dimensions = prop.substring(4);
         }
       }
-      
+
       if (mediaItem.url) {
         media.push(mediaItem);
       }
     }
   });
-  
+
   return media;
 }
 
 // Extract media from regular text notes (kind 1)
 export function extractTextNoteMedia(event: NostrEvent): MediaItem[] {
   const media: MediaItem[] = [];
-  
+
   // Extract URLs from content using regex
   const urlRegex = /https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|mp4|webm|mov|avi|mp3|wav|ogg)/gi;
   const urls = event.content.match(urlRegex) || [];
-  
+
   urls.forEach(url => {
-    const extension = url.split('.').pop()?.toLowerCase();
+    const urlString = url as string;
+    const extension = urlString.split('.').pop()?.toLowerCase();
     let type: 'image' | 'video' | 'unknown' = 'unknown';
-    
+
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '')) {
       type = 'image';
     } else if (['mp4', 'webm', 'mov', 'avi'].includes(extension || '')) {
       type = 'video';
     }
-    
+
     media.push({
-      url: url.trim(),
+      url: urlString.trim(),
       type,
       mimeType: `${type}/${extension}`,
     });
   });
-  
+
   // Also check for imeta tags in kind 1 events
   event.tags.forEach(tag => {
     if (tag[0] === 'imeta') {
@@ -89,7 +90,7 @@ export function extractTextNoteMedia(event: NostrEvent): MediaItem[] {
         url: '',
         type: 'unknown',
       };
-      
+
       // Parse imeta tag properties
       for (let i = 1; i < tag.length; i++) {
         const prop = tag[i];
@@ -106,18 +107,18 @@ export function extractTextNoteMedia(event: NostrEvent): MediaItem[] {
           }
         }
       }
-      
+
       if (mediaItem.url) {
         media.push(mediaItem);
       }
     }
   });
-  
+
   // Deduplicate media items by URL
-  const uniqueMedia = media.filter((item, index, self) => 
+  const uniqueMedia = media.filter((item, index, self) =>
     index === self.findIndex(m => m.url === item.url)
   );
-  
+
   return uniqueMedia;
 }
 
@@ -128,7 +129,7 @@ export function extractMediaFromEvent(event: NostrEvent): MediaItem[] {
   } else if (event.kind === 1) {
     return extractTextNoteMedia(event);
   }
-  
+
   return [];
 }
 

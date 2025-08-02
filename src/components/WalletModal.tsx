@@ -277,27 +277,31 @@ export function WalletModal({ children, className }: WalletModalProps) {
   const addWalletDialog = (
     <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Connect NWC Wallet</DialogTitle>
-          <DialogDescription>
-            Enter your connection string from a compatible wallet.
-          </DialogDescription>
-        </DialogHeader>
-        <AddWalletContent
-          alias={alias}
-          setAlias={setAlias}
-          connectionUri={connectionUri}
-          setConnectionUri={setConnectionUri}
-        />
-        <DialogFooter className="px-4">
-          <Button
-            onClick={handleAddConnection}
-            disabled={isConnecting || !connectionUri.trim()}
-            className="w-full"
-          >
-            {isConnecting ? 'Connecting...' : 'Connect'}
-          </Button>
-        </DialogFooter>
+        <div className="flex flex-col h-full">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle>Connect NWC Wallet</DialogTitle>
+            <DialogDescription>
+              Enter your connection string from a compatible wallet.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto min-h-0 py-4">
+            <AddWalletContent
+              alias={alias}
+              setAlias={setAlias}
+              connectionUri={connectionUri}
+              setConnectionUri={setConnectionUri}
+            />
+          </div>
+          <DialogFooter className="flex-shrink-0 pt-4 border-t px-0">
+            <Button
+              onClick={handleAddConnection}
+              disabled={isConnecting || !connectionUri.trim()}
+              className="w-full"
+            >
+              {isConnecting ? 'Connecting...' : 'Connect'}
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
