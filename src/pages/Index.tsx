@@ -12,8 +12,8 @@ const Index = () => {
   const events = useNostrValleyEvents();
 
   useSeoMeta({
-    title: 'Nostr Valley - The Premier Nostr Conference',
-    description: 'Join us at Nostr Valley, the premier conference for the Nostr protocol community. Learn, network, and build the decentralized future.',
+    title: 'Nostr Valley 2.0 - October 18, 2025',
+    description: 'Join us at Happy Valley Brewing Company for Nostr Valley 2.0! A full day of talks, panels, food, music, and connection in the heart of Pennsylvania.',
   });
 
   // Get the main conference event for registration (any available event)
@@ -37,12 +37,25 @@ const Index = () => {
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Welcome to <br />
-              <span className="bg-white text-transparent bg-clip-text">Nostr Valley</span>
+              <span className="bg-white text-transparent bg-clip-text">Nostr Valley 2.0</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-8 leading-relaxed">
-              The premier conference in Happy Valley bringing together developers, builders, and enthusiasts
-              of the Nostr protocol. Join us to celebrate community and culture while shaping the decentralized future.
+            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-6 leading-relaxed">
+              The future of decentralized social is happening in Happy Valley—and you're invited.
             </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 leading-relaxed">
+              Join us at Happy Valley Brewing Company for a full day of talks, panels, food, music, and connection at the second edition of Nostr Valley.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center mb-8 text-white/90">
+              <div className="flex items-center justify-center gap-2">
+                <Calendar className="h-5 w-5" />
+                <span className="font-semibold">October 18, 2025</span>
+              </div>
+              <div className="hidden sm:block text-white/60">•</div>
+              <div className="flex items-center justify-center gap-2">
+                <Users className="h-5 w-5" />
+                <span className="font-semibold">Happy Valley Brewing Company, PA</span>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <RSVPDialog calendarEvent={mainConferenceEvent}>
                 <Button size="lg" className="bg-white text-black hover:bg-white/90 font-semibold px-8">
@@ -65,12 +78,97 @@ const Index = () => {
         {/* About Section */}
         <section className="py-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">About Nostr Valley</h2>
-            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              We're back in the heart of Happy Valley for the second edition of Nostr Valley! Hosted near Penn State University in central Pennsylvania, Nostr Valley 2.0 brings together builders, thinkers, and freedom tech enthusiasts for a grassroots event focused on decentralized social, Bitcoin, and the growing Nostr ecosystem. Expect meetups, mini talks, workshops, and real conversations—right where innovation and independence meet. Whether you're a dev, creator, or just Nostr-curious, this is where the vibes live.
+            <h2 className="text-3xl font-bold mb-6">About Nostr Valley 2.0</h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-8">
+              This year we're going bigger, deeper, and more fun than ever before. Nostr Valley 2.0 brings together developers, builders, Bitcoiners, creators, and freedom tech enthusiasts to explore the culture, community, and possibilities of Nostr—the open protocol powering the next wave of censorship-resistant communication and social media.
+            </p>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Whether you're here to learn, network, or simply vibe with like-minded people, you'll find something for you. Come for the ideas, stay for the people, and leave inspired.
             </p>
           </div>
         </section>
+
+      </div>
+
+      {/* What to Expect Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-6">What to Expect</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              A full day packed with insights, connections, and good vibes
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Inspiring Talks</h3>
+              <p className="text-muted-foreground">
+                Hear from innovators shaping the decentralized future
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Hash className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Engaging Panels</h3>
+              <p className="text-muted-foreground">
+                Deep dives on Nostr, Bitcoin, and digital freedom
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Great Food & Drinks</h3>
+              <p className="text-muted-foreground">
+                Craft beer and delicious food at Happy Valley Brewing
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Camera className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Live Music & Community</h3>
+              <p className="text-muted-foreground">
+                Connect with a welcoming community passionate about building a better internet
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Don't Miss the Premier Nostr Event</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            Mark your calendars, bring your friends, and get ready to be part of the movement.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <RSVPDialog calendarEvent={mainConferenceEvent}>
+              <Button size="lg" variant="secondary" className="font-semibold px-8">
+                <ExternalLink className="h-5 w-5 mr-2" />
+                Register Now
+              </Button>
+            </RSVPDialog>
+            <Link to="/schedule">
+              <Button variant="outline" size="lg" className="border-primary-foreground/20 text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground hover:text-primary backdrop-blur-sm px-8">
+                <Calendar className="h-5 w-5 mr-2" />
+                View Schedule
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4">
 
 
         {/* Community Highlights */}
@@ -144,8 +242,10 @@ const Index = () => {
                 </div>
               </div>
               <p className="text-muted-foreground mb-4">
-                The premiere Nostr event in Happy Valley.
-                Join us to celebrate community and culture while shaping the decentralized future.
+                October 18, 2025 • Happy Valley Brewing Company, Pennsylvania
+              </p>
+              <p className="text-muted-foreground mb-4">
+                Join us for the second edition of Nostr Valley to celebrate community and culture while shaping the decentralized future.
               </p>
             </div>
 
