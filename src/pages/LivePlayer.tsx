@@ -12,7 +12,7 @@ import { useNostrValleyLiveEvents } from '@/hooks/useLiveEvents';
 import { NOSTR_VALLEY_PUBKEY } from '@/hooks/useNostrValley';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
-import { CommentsSection } from '@/components/comments/CommentsSection';
+import { LiveChat } from '@/components/LiveChat';
 import { ZapButton } from '@/components/ZapButton';
 import { ParticipantItem } from '@/components/ParticipantItem';
 
@@ -252,13 +252,8 @@ export default function LivePlayer() {
               </CardContent>
             </Card>
 
-            {/* Comments Section */}
-            <CommentsSection
-              root={event.rawEvent}
-              title="Live Chat"
-              emptyStateMessage="No messages yet"
-              emptyStateSubtitle="Be the first to comment on this stream!"
-            />
+            {/* Live Chat */}
+            <LiveChat eventCoordinate={`30311:${event.pubkey}:${event.identifier}`} />
           </div>
 
           {/* Sidebar */}
