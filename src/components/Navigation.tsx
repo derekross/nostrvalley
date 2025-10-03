@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Calendar, MessageCircle } from 'lucide-react';
+import { Home, Users, Calendar, MessageCircle, Radio } from 'lucide-react';
 import { LoginArea } from '@/components/auth/LoginArea';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 const navigationItems = [
@@ -9,6 +8,7 @@ const navigationItems = [
   { path: '/community', label: 'Community', icon: MessageCircle },
   { path: '/schedule', label: 'Schedule', icon: Calendar },
   { path: '/speakers', label: 'Speakers', icon: Users },
+  { path: '/live', label: 'Live', icon: Radio },
 ];
 
 export function Navigation() {
@@ -51,9 +51,8 @@ export function Navigation() {
               ))}
             </nav>
 
-            {/* Theme Toggle and Login */}
+            {/* Login */}
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               <LoginArea className="max-w-48 hidden sm:flex" />
             </div>
           </div>
@@ -80,7 +79,8 @@ export function Navigation() {
                 <span className="text-xs font-medium">
                   {path === '/' ? 'Home' :
                    path === '/community' ? 'Community' :
-                   path === '/schedule' ? 'Schedule' : 'Speakers'}
+                   path === '/schedule' ? 'Schedule' :
+                   path === '/speakers' ? 'Speakers' : 'Live'}
                 </span>
               </Link>
             ))}
