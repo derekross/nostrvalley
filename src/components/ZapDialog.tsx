@@ -209,7 +209,7 @@ const ZapContent = forwardRef<HTMLDivElement, ZapContentProps>(({
           />
           <Textarea
             id="custom-comment"
-            placeholder="Add a comment (optional)"
+            placeholder="Zapped from NostrValley.com!"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="w-full resize-none text-sm"
@@ -251,7 +251,7 @@ export function ZapDialog({ target, children, className }: ZapDialogProps) {
 
   useEffect(() => {
     if (target) {
-      setComment('Zapped with MKStack!');
+      setComment('Zapped from NostrValley.com!');
     }
   }, [target]);
 

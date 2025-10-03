@@ -98,7 +98,7 @@ export function parseLiveEvent(event: NostrEvent): ParsedLiveEvent {
 }
 
 /**
- * Hook to fetch live events from Nostr Valley account
+ * Hook to fetch live events where Nostr Valley is a participant
  */
 export function useNostrValleyLiveEvents() {
   const { nostr } = useNostr();
@@ -106,14 +106,14 @@ export function useNostrValleyLiveEvents() {
   return useQuery({
     queryKey: ['nostr-valley-live-events'],
     queryFn: async (c) => {
-      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(1500)]);
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
 
-      // Query for NIP-53 live streaming events (kind 30311) from Nostr Valley
+      // Query for NIP-53 live streaming events (kind 30311) where Nostr Valley is tagged as a participant
       const events = await nostr.query(
         [
           {
             kinds: [30311],
-            authors: [NOSTR_VALLEY_PUBKEY],
+            '#p': [NOSTR_VALLEY_PUBKEY],
             limit: 50,
           },
         ],

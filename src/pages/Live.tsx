@@ -1,4 +1,5 @@
 import { useSeoMeta } from '@unhead/react';
+import { Link } from 'react-router-dom';
 import { Radio, Clock, Users, Play, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -135,26 +136,30 @@ function LiveEventCard({ event }: { event: ParsedLiveEvent }) {
           </div>
         )}
 
-        {(event.streaming || event.recording) && (
-          <div className="flex gap-2 pt-2">
-            {event.streaming && event.status === 'live' && (
-              <Button asChild className="flex-1">
-                <a href={event.streaming} target="_blank" rel="noopener noreferrer">
+        <div className="flex gap-2 pt-2">
+          <Button asChild className="flex-1">
+            <Link to={`/live/${event.identifier}`}>
+              {event.status === 'live' && (
+                <>
                   <Radio className="h-4 w-4 mr-2" />
                   Watch Live
-                </a>
-              </Button>
-            )}
-            {event.recording && event.status === 'ended' && (
-              <Button asChild variant="outline" className="flex-1">
-                <a href={event.recording} target="_blank" rel="noopener noreferrer">
+                </>
+              )}
+              {event.status === 'planned' && (
+                <>
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View Details
+                </>
+              )}
+              {event.status === 'ended' && (
+                <>
                   <Play className="h-4 w-4 mr-2" />
                   Watch Recording
-                </a>
-              </Button>
-            )}
-          </div>
-        )}
+                </>
+              )}
+            </Link>
+          </Button>
+        </div>
 
         <div className="flex items-center justify-between pt-3 border-t text-xs text-muted-foreground">
           <span>Hosted by {authorName}</span>
