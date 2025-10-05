@@ -37,7 +37,7 @@ const Index = () => {
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Welcome to <br />
-              <span className="bg-white text-transparent bg-clip-text">Nostr Valley 2.0</span>
+              <span className="bg-white text-transparent bg-clip-text">Nostr Valley</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-6 leading-relaxed">
               The future of decentralized social is happening in Happy Valley—and you're invited.
@@ -78,7 +78,7 @@ const Index = () => {
         {/* About Section */}
         <section className="py-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-6">About Nostr Valley 2.0</h2>
+            <h2 className="text-3xl font-bold mb-6">About Nostr Valley</h2>
             <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-8">
               This year we're going bigger, deeper, and more fun than ever before. Nostr Valley 2.0 brings together developers, builders, Bitcoiners, creators, and freedom tech enthusiasts to explore the culture, community, and possibilities of Nostr—the open protocol powering the next wave of censorship-resistant communication and social media.
             </p>
