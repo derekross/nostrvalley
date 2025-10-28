@@ -1,6 +1,6 @@
 import { useSeoMeta } from '@unhead/react';
 import { Link } from 'react-router-dom';
-import { Radio, Clock, Users, Play, Calendar } from 'lucide-react';
+import { Radio, Clock, Users, Play, Calendar, Video } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -240,6 +240,46 @@ export default function Live() {
                   <LiveEventCard key={event.id} event={event} />
                 ))}
               </div>
+            </section>
+          )}
+
+          {/* Event Archive - YouTube Playlist */}
+          {!liveEvents.isLoading && (
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Video className="h-6 w-6 text-primary" />
+                Event Archive
+              </h2>
+              <Card>
+                <CardContent className="p-0">
+                  <div className="aspect-video w-full">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src="https://www.youtube.com/embed/videoseries?list=PLTQJ1TiXFu42cVsvpJ2jwKetZ6kzA-YYx"
+                      title="Nostr Valley Event Archive"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="rounded-lg"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Watch recordings from the most recent Nostr Valley event
+                    </p>
+                    <Button asChild variant="outline" className="w-full sm:w-auto">
+                      <a
+                        href="https://www.youtube.com/playlist?list=PLTQJ1TiXFu42cVsvpJ2jwKetZ6kzA-YYx"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Video className="h-4 w-4 mr-2" />
+                        View Full Playlist on YouTube
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </section>
           )}
 

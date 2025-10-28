@@ -24,10 +24,10 @@ const Index = () => {
       <Navigation />
 
       {/* Hero Section with Background */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-[600px] md:min-h-[700px]">
         {/* Hero Background - Image with overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-purple-600 to-blue-600"
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat bg-gradient-to-br from-purple-600 to-blue-600"
           style={{ backgroundImage: 'url(/NV-Hero.png)' }}
         ></div>
         <div className="absolute inset-0 bg-black/40"></div>
