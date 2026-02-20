@@ -1,13 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Calendar, MessageCircle, Radio } from 'lucide-react';
+import { Home, Users, Calendar, MessageCircle, Radio, Lightbulb } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { LoginArea } from '@/components/auth/LoginArea';
+import { SubmitProposalDialog } from '@/components/SubmitProposalDialog';
 import { cn } from '@/lib/utils';
 
 const navigationItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/community', label: 'Community', icon: MessageCircle },
-  { path: '/schedule', label: 'Schedule', icon: Calendar },
-  { path: '/speakers', label: 'Speakers', icon: Users },
+  { path: '/schedule', label: 'Events', icon: Calendar },
+  { path: '/speakers', label: 'People', icon: Users },
   { path: '/live', label: 'Live', icon: Radio },
 ];
 
@@ -17,19 +19,17 @@ export function Navigation() {
   return (
     <>
       {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-card/95">
+      <header className="border-b bg-background/95 sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img
-                src="/NV-Hero.png"
+                src="/nv-logo.png"
                 alt="Nostr Valley"
-                className="h-8 w-8 rounded object-cover"
+                className="h-8 w-8 rounded-full object-cover"
               />
-              <div>
-                <h1 className="text-lg font-bold text-primary">Nostr Valley</h1>
-              </div>
+              <span className="text-lg font-bold">Nostr Valley</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -39,9 +39,9 @@ export function Navigation() {
                   key={path}
                   to={path}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                     location.pathname === path
-                      ? "bg-primary text-primary-foreground"
+                      ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
@@ -51,8 +51,14 @@ export function Navigation() {
               ))}
             </nav>
 
-            {/* Login */}
+            {/* Right side */}
             <div className="flex items-center gap-2">
+              <SubmitProposalDialog>
+                <Button variant="outline" size="sm" className="hidden sm:flex gap-1.5 text-xs">
+                  <Lightbulb className="h-3.5 w-3.5" />
+                  Propose a Talk
+                </Button>
+              </SubmitProposalDialog>
               <LoginArea className="max-w-48 hidden sm:flex" />
             </div>
           </div>
@@ -60,35 +66,32 @@ export function Navigation() {
       </header>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/95">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 pb-[env(safe-area-inset-bottom)]">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-around h-16">
-            {/* Navigation Items */}
-            {navigationItems.map(({ path, icon: Icon }) => (
+            {navigationItems.map(({ path, label, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
                 className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-md transition-colors min-w-[60px]",
+                  "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[56px]",
                   location.pathname === path
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <Icon className="h-5 w-5" />
-                <span className="text-xs font-medium">
-                  {path === '/' ? 'Home' :
-                   path === '/community' ? 'Community' :
-                   path === '/schedule' ? 'Schedule' :
-                   path === '/speakers' ? 'Speakers' : 'Live'}
-                </span>
+                <span className="text-[10px] font-medium">{label}</span>
               </Link>
             ))}
 
-            {/* Login Area */}
-            <div className="flex flex-col items-center gap-1 min-w-[60px]">
-              <LoginArea className="flex" compact />
-            </div>
+            {/* Propose a Talk - mobile */}
+            <SubmitProposalDialog>
+              <button className="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[56px] text-muted-foreground hover:text-foreground">
+                <Lightbulb className="h-5 w-5" />
+                <span className="text-[10px] font-medium">Propose</span>
+              </button>
+            </SubmitProposalDialog>
           </div>
         </div>
       </nav>

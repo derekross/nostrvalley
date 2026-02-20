@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { Navigation } from '@/components/Navigation';
+import { Layout } from '@/components/Layout';
 import { useNostrValleyLiveEvents, type ParsedLiveEvent } from '@/hooks/useLiveEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
@@ -34,9 +34,9 @@ function LiveEventCard({ event }: { event: ParsedLiveEvent }) {
       case 'planned':
         return 'bg-blue-500 text-white';
       case 'ended':
-        return 'bg-gray-500 text-white';
+        return 'bg-muted text-muted-foreground';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -177,7 +177,7 @@ export default function Live() {
 
   useSeoMeta({
     title: 'Live - Nostr Valley',
-    description: 'Live streams and events from Nostr Valley conference.',
+    description: 'Live streams and recordings from Nostr Valley meetups and events.',
   });
 
   const liveNow = liveEvents.data?.filter(event => event.status === 'live') || [];
@@ -185,15 +185,13 @@ export default function Live() {
   const past = liveEvents.data?.filter(event => event.status === 'ended') || [];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-
-      <div className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-12">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Live Events</h1>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Live Events</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Watch live streams, recordings, and upcoming events from Nostr Valley
+            Watch live streams and recordings from Nostr Valley meetups and events
           </p>
         </div>
 
@@ -217,7 +215,7 @@ export default function Live() {
           {upcoming.length > 0 && (
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Calendar className="h-6 w-6 text-blue-500" />
+                <Calendar className="h-6 w-6 text-primary" />
                 Upcoming
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -250,7 +248,7 @@ export default function Live() {
                 <Video className="h-6 w-6 text-primary" />
                 Event Archive
               </h2>
-              <Card>
+              <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="aspect-video w-full">
                     <iframe
@@ -260,12 +258,12 @@ export default function Live() {
                       title="Nostr Valley Event Archive"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
-                      className="rounded-lg"
+                      className="rounded-t-lg"
                     />
                   </div>
                   <div className="p-6">
                     <p className="text-sm text-muted-foreground mb-4">
-                      Watch recordings from the most recent Nostr Valley event
+                      Watch recordings from past Nostr Valley meetups and events
                     </p>
                     <Button asChild variant="outline" className="w-full sm:w-auto">
                       <a
@@ -325,6 +323,6 @@ export default function Live() {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

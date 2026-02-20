@@ -8,56 +8,46 @@ interface NostrProviderProps {
   children: React.ReactNode;
 }
 
+const READ_RELAYS = [
+  'wss://relay.damus.io',
+  'wss://relay.ditto.pub',
+  'wss://relay.primal.net',
+];
+
 const NostrProvider: React.FC<NostrProviderProps> = (props) => {
   const { children } = props;
   const { config } = useAppContext();
 
   const queryClient = useQueryClient();
-
-  // Create NPool instance only once
   const pool = useRef<NPool | undefined>(undefined);
+  const relayUrls = useRef<string[]>(READ_RELAYS);
 
-  // Use refs so the pool always has the latest data
-  const relayUrl = useRef<string>(config.relayUrl);
-
-  // Define multiple relays for better data coverage
-  // This ensures we don't miss content from different relays
-  const multiRelayUrls = useRef<string[]>([
-    'wss://relay.primal.net',
-    'wss://relay.nostr.band',
-    'wss://relay.damus.io',
-    'wss://relay.ditto.pub'
-  ]);
-
-  // Update refs when config changes
+  // Update relay list when config changes, keeping selected relay first
   useEffect(() => {
-    relayUrl.current = config.relayUrl;
-    // Ensure selected relay is first in the list for priority
-    multiRelayUrls.current = [
+    relayUrls.current = [
       config.relayUrl,
-      ...multiRelayUrls.current.filter(url => url !== config.relayUrl)
-    ].slice(0, 4); // Limit to 4 relays max for performance
+      ...READ_RELAYS.filter(url => url !== config.relayUrl),
+    ];
     queryClient.resetQueries();
   }, [config.relayUrl, queryClient]);
 
-  // Initialize NPool only once
   if (!pool.current) {
     pool.current = new NPool({
       open(url: string) {
         return new NRelay1(url);
       },
       reqRouter(filters) {
-        // Query multiple relays for better data coverage and consistency
-        // NPool automatically deduplicates results from multiple relays
-        const relayMap = new Map();
-        multiRelayUrls.current.forEach(url => {
+        // Fan out reads to all relays in parallel.
+        // NPool deduplicates events and returns partial results on abort,
+        // so callers use a short AbortSignal.timeout() as a deadline.
+        const relayMap = new Map<string, typeof filters>();
+        for (const url of relayUrls.current) {
           relayMap.set(url, filters);
-        });
+        }
         return relayMap;
       },
       eventRouter(_event: NostrEvent) {
-        // Publish to all configured relays for better distribution
-        return multiRelayUrls.current;
+        return relayUrls.current;
       },
     });
   }

@@ -1,14 +1,15 @@
 import { useSeoMeta } from '@unhead/react';
-import { Users, Globe, Zap } from 'lucide-react';
+import { Users, Globe, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Navigation } from '@/components/Navigation';
+import { Layout } from '@/components/Layout';
 import { SubmitProposalDialog } from '@/components/SubmitProposalDialog';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
+import { nip19 } from 'nostr-tools';
 
 function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
   const author = useAuthor(pubkey);
@@ -17,12 +18,13 @@ function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
   const authorAbout = author.data?.metadata?.about;
   const authorWebsite = author.data?.metadata?.website;
   const authorNip05 = author.data?.metadata?.nip05;
+  const npub = nip19.npubEncode(pubkey);
 
   return (
     <Card className="hover:shadow-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="text-center">
-          <Avatar className="h-20 w-20 mx-auto mb-4">
+          <Avatar className="h-20 w-20 mx-auto mb-4 ring-2 ring-primary/10">
             <AvatarImage src={authorImage} alt={authorName} />
             <AvatarFallback className="text-lg">{authorName.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
@@ -56,9 +58,11 @@ function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
                 </a>
               </Button>
             )}
-            <Button variant="outline" size="sm">
-              <Zap className="h-3 w-3 mr-1" />
-              Profile
+            <Button variant="outline" size="sm" asChild>
+              <a href={`https://njump.me/${npub}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-3 w-3 mr-1" />
+                Profile
+              </a>
             </Button>
           </div>
         </div>
@@ -71,8 +75,8 @@ export default function Speakers() {
   const events = useNostrValleyEvents();
 
   useSeoMeta({
-    title: 'Speakers - Nostr Valley',
-    description: 'Meet the speakers and presenters at Nostr Valley conference. Learn from leading experts in the Nostr ecosystem.',
+    title: 'People - Nostr Valley',
+    description: 'Meet the people behind Nostr Valley. Presenters, organizers, and community members who make our meetups happen.',
   });
 
   // Extract speakers from event participants
@@ -87,7 +91,6 @@ export default function Speakers() {
       
       if (existing) {
         existing.eventTitles.push(parsedEvent.title);
-        // Keep the most specific role
         if (role !== 'Speaker' && existing.role === 'Speaker') {
           existing.role = role;
         }
@@ -106,15 +109,13 @@ export default function Speakers() {
   }));
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <div className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-12">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Conference Speakers</h1>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">People</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Meet the experts, builders, and thought leaders presenting at Nostr Valley
+            The presenters, organizers, and community members who make Nostr Valley happen
           </p>
         </div>
 
@@ -136,7 +137,7 @@ export default function Speakers() {
           <>
             <div className="text-center mb-8">
               <Badge variant="secondary" className="text-sm px-4 py-2">
-                {speakerList.length} Speaker{speakerList.length !== 1 ? 's' : ''} Confirmed
+                {speakerList.length} {speakerList.length === 1 ? 'Community Member' : 'Community Members'}
               </Badge>
             </div>
             
@@ -146,9 +147,9 @@ export default function Speakers() {
               ))}
             </div>
             
-            {/* Featured Sessions */}
+            {/* Recent Sessions */}
             <section className="mt-12">
-              <h2 className="text-2xl font-bold mb-6 text-center">Featured Sessions</h2>
+              <h2 className="text-2xl font-bold mb-6 text-center">Recent Sessions</h2>
               <div className="grid gap-4 max-w-2xl mx-auto">
                 {Array.from(new Set(speakerList.flatMap(s => s.eventTitles))).slice(0, 5).map((title, i) => (
                   <Card key={i} className="border-l-4 border-l-primary">
@@ -164,14 +165,14 @@ export default function Speakers() {
           <Card className="border-dashed">
             <CardContent className="py-16 px-8 text-center">
               <Users className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-              <h3 className="text-lg font-semibold mb-2">Speakers Coming Soon</h3>
+              <h3 className="text-lg font-semibold mb-2">Community Members Coming Soon</h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                We're confirming an amazing lineup of speakers from across the Nostr ecosystem.
+                As we host more meetups, the people who present and participate will show up here.
               </p>
               <div className="bg-muted rounded-lg p-6 max-w-lg mx-auto">
-                <h4 className="font-medium mb-2">Want to speak at Nostr Valley?</h4>
+                <h4 className="font-medium mb-2">Want to present at a meetup?</h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  We're looking for builders, researchers, and innovators to share their insights.
+                  We're always looking for people to share what they're building or learning. All levels welcome.
                 </p>
                 <SubmitProposalDialog />
               </div>
@@ -179,6 +180,6 @@ export default function Speakers() {
           </Card>
         )}
       </div>
-    </div>
+    </Layout>
   );
 }

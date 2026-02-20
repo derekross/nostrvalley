@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useNostr } from '@nostrify/react';
 import type { NostrEvent } from '@nostrify/nostrify';
 import { NOSTR_VALLEY_PUBKEY } from './useNostrValley';
-import { multiRelayQuery } from '@/lib/nostrUtils';
 
 // Validator function for NIP-52 calendar events
 function validateCalendarEvent(event: NostrEvent): boolean {
@@ -19,14 +18,12 @@ function validateCalendarEvent(event: NostrEvent): boolean {
 
   // Additional validation for date-based events (kind 31922)
   if (event.kind === 31922) {
-    // start tag should be in YYYY-MM-DD format for date-based events
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(start)) return false;
   }
 
   // Additional validation for time-based events (kind 31923)
   if (event.kind === 31923) {
-    // start tag should be a unix timestamp for time-based events
     const timestamp = parseInt(start);
     if (isNaN(timestamp) || timestamp <= 0) return false;
   }
@@ -39,19 +36,18 @@ export function useNostrValleyEvents() {
 
   return useQuery({
     queryKey: ['nostr-valley-events'],
-    queryFn: async (_c) => {
-      console.log('Fetching Nostr Valley calendar events from multiple relays...');
-
-      // Query for calendar events from Nostr Valley account or tagged with NostrValley
-      const events = await multiRelayQuery(nostr, [{
-        kinds: [31922, 31923], // Date-based and time-based calendar events
+    queryFn: async (c) => {
+      // Short deadline -- NPool returns partial results on abort
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(1500)]);
+      const events = await nostr.query([{
+        kinds: [31922, 31923],
         authors: [NOSTR_VALLEY_PUBKEY],
         limit: 50
       }, {
         kinds: [31922, 31923],
-        '#t': ['NostrValley', 'nostrvalley'], // Also get events tagged with NostrValley
+        '#t': ['NostrValley', 'nostrvalley'],
         limit: 50
-      }], { timeout: 5000, maxRelays: 4 });
+      }], { signal });
 
       // Filter events through validator to ensure they meet NIP-52 requirements
       const validEvents = events.filter(validateCalendarEvent);
@@ -63,17 +59,14 @@ export function useNostrValleyEvents() {
 
         if (!startA || !startB) return 0;
 
-        // For date-based events, compare dates
         if (a.kind === 31922 && b.kind === 31922) {
           return startA.localeCompare(startB);
         }
 
-        // For time-based events, compare timestamps
         if (a.kind === 31923 && b.kind === 31923) {
           return parseInt(startA) - parseInt(startB);
         }
 
-        // Mixed comparison: convert date to timestamp for comparison
         if (a.kind === 31922 && b.kind === 31923) {
           const dateA = new Date(startA).getTime() / 1000;
           const timestampB = parseInt(startB);

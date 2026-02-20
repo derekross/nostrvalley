@@ -1,6 +1,7 @@
 import { useSeoMeta } from "@unhead/react";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Layout } from "@/components/Layout";
 
 const NotFound = () => {
   const location = useLocation();
@@ -18,15 +19,17 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">404</h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline">
-          Return to Home
-        </a>
+    <Layout>
+      <div className="flex-1 flex items-center justify-center py-32">
+        <div className="text-center">
+          <h1 className="text-6xl font-bold mb-4 text-primary">404</h1>
+          <p className="text-xl text-muted-foreground mb-6">Page not found</p>
+          <a href="/" className="text-primary hover:underline font-medium">
+            Return to Home
+          </a>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

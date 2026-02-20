@@ -1,21 +1,21 @@
 {
-  "name": "Nostr Valley - The Premier Nostr Conference",
+  "name": "Nostr Valley - Nostr & Bitcoin Meetup",
   "short_name": "Nostr Valley",
-  "description": "Join us at Nostr Valley, the premier conference for the Nostr protocol community. Learn, network, and build the decentralized future.",
+  "description": "A monthly Nostr and Bitcoin meetup in Happy Valley, Pennsylvania. Join us to learn, connect, and grow the local freedom tech community.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#667eea",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3ccircle cx='50' cy='50' r='45' fill='%23667eea'/%3e%3ctext x='50' y='58' text-anchor='middle' fill='white' font-size='32' font-weight='bold' font-family='system-ui'%3eNV%3c/text%3e%3c/svg%3e",
+      "src": "/nv-logo.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3ccircle cx='50' cy='50' r='45' fill='%23667eea'/%3e%3ctext x='50' y='58' text-anchor='middle' fill='white' font-size='32' font-weight='bold' font-family='system-ui'%3eNV%3c/text%3e%3c/svg%3e",
+      "src": "/nv-logo.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ]
 }

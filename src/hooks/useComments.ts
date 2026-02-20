@@ -1,7 +1,6 @@
 import { NKinds, NostrEvent, NostrFilter } from '@nostrify/nostrify';
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
-import { multiRelayQuery } from '@/lib/nostrUtils';
 
 export function useComments(root: NostrEvent | URL, limit?: number) {
   const { nostr } = useNostr();
@@ -26,9 +25,7 @@ export function useComments(root: NostrEvent | URL, limit?: number) {
         filter.limit = limit;
       }
 
-      // Query for all kind 1111 comments that reference this addressable event regardless of depth
-      console.log('Fetching comments from multiple relays for:', root instanceof URL ? root.toString() : root.id);
-      const events = await multiRelayQuery(nostr, [filter], { timeout: 6000, maxRelays: 4 });
+      const events = await nostr.query([filter], { signal: AbortSignal.timeout(1500) });
 
       // Helper function to get tag value
       const getTagValue = (event: NostrEvent, tagName: string): string | undefined => {

@@ -1,35 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNostr } from '@nostrify/react';
-import type { NostrEvent } from '@nostrify/nostrify';
-import { multiRelayQuery } from '@/lib/nostrUtils';
 
 export function useNostrValleyFeed() {
   const { nostr } = useNostr();
 
   return useQuery({
     queryKey: ['nostr-valley-feed'],
-    queryFn: async (_c) => {
-      console.log('Fetching Nostr Valley feed from multiple relays...');
+    queryFn: async (c) => {
+      // Short deadline -- NPool returns partial results on abort,
+      // so we get events from whichever relays responded fastest.
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(1500)]);
 
-      // Query for posts with #NostrValley or #nostrvalley hashtag from across the ecosystem
-      const events = await multiRelayQuery(nostr, [{
-        kinds: [1], // Short text notes
-        '#t': ['NostrValley'], // Search for NostrValley
-        limit: 50
-      }, {
-        kinds: [1], // Short text notes
-        '#t': ['nostrvalley'], // Search for nostrvalley (lowercase)
-        limit: 50
-      }], { timeout: 5000, maxRelays: 4 });
+      const events = await nostr.query([
+        { kinds: [1], '#t': ['NostrValley'], limit: 50 },
+        { kinds: [1], '#t': ['nostrvalley'], limit: 50 },
+      ], { signal });
 
-      // Remove duplicates and sort by created_at descending (newest first)
-      const uniqueEvents = events.filter((event, index, self) =>
-        index === self.findIndex(e => e.id === event.id)
-      );
-
-      return uniqueEvents
+      // Sort by created_at descending (newest first)
+      return events
         .sort((a, b) => b.created_at - a.created_at)
-        .slice(0, 20); // Return only the latest 20
+        .slice(0, 20);
     },
   });
 }
@@ -40,35 +30,18 @@ export function useNostrValleyMedia() {
 
   return useQuery({
     queryKey: ['nostr-valley-media'],
-    queryFn: async (_c) => {
-      console.log('Fetching Nostr Valley media from multiple relays...');
+    queryFn: async (c) => {
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(1500)]);
 
-      // Query for posts with #NostrValley or #nostrvalley hashtag that contain media
-      const events = await multiRelayQuery(nostr, [{
-        kinds: [1], // Short text notes
-        '#t': ['NostrValley'], // Search for NostrValley
-        limit: 100
-      }, {
-        kinds: [1], // Short text notes
-        '#t': ['nostrvalley'], // Search for nostrvalley (lowercase)
-        limit: 100
-      }, {
-        kinds: [20], // NIP-68 Picture events
-        '#t': ['NostrValley'], // Search for NostrValley
-        limit: 50
-      }, {
-        kinds: [20], // NIP-68 Picture events
-        '#t': ['nostrvalley'], // Search for nostrvalley (lowercase)
-        limit: 50
-      }], { timeout: 6000, maxRelays: 4 });
-
-      // Remove duplicates first
-      const uniqueEvents = events.filter((event, index, self) =>
-        index === self.findIndex(e => e.id === event.id)
-      );
+      const events = await nostr.query([
+        { kinds: [1], '#t': ['NostrValley'], limit: 50 },
+        { kinds: [1], '#t': ['nostrvalley'], limit: 50 },
+        { kinds: [20], '#t': ['NostrValley'], limit: 30 },
+        { kinds: [20], '#t': ['nostrvalley'], limit: 30 },
+      ], { signal });
 
       // Filter events that contain media content
-      const mediaEvents = uniqueEvents.filter((event: NostrEvent) => {
+      const mediaEvents = events.filter((event) => {
         // For kind 20 (NIP-68), all events are picture events
         if (event.kind === 20) return true;
 

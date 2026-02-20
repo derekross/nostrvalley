@@ -1,20 +1,19 @@
 import React from 'react';
 import { useSeoMeta } from '@unhead/react';
-import { Users, Hash } from 'lucide-react';
+import { Users, Hash, Play } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { NoteContent } from '@/components/NoteContent';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Navigation } from '@/components/Navigation';
+import { Layout } from '@/components/Layout';
 import { useInfiniteCommunityFeedEvents } from '@/hooks/useInfiniteCommunityFeed';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
 import { extractMediaFromEvent, type MediaItem } from '@/lib/mediaUtils';
 import { formatDistanceToNow } from 'date-fns';
-import { Play } from 'lucide-react';
 import { nip19 } from 'nostr-tools';
 import type { NostrEvent } from '@nostrify/nostrify';
 
@@ -47,7 +46,6 @@ function MediaDisplay({ media }: { media: MediaItem[] }) {
               </div>
             </div>
           ) : (
-            // Fallback for unknown media types - show as link
             <div className="p-4 border border-dashed border-muted-foreground/30 rounded">
               <a 
                 href={item.url} 
@@ -55,7 +53,7 @@ function MediaDisplay({ media }: { media: MediaItem[] }) {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline text-sm break-all"
               >
-                📎 {item.url}
+                {item.url}
               </a>
             </div>
           )}
@@ -78,10 +76,7 @@ function PostCard({ event }: { event: NostrEvent }) {
   const nevent = nip19.neventEncode({ id: event.id, author: event.pubkey });
   const hasRealName = !!author.data?.metadata?.name;
   
-  // Extract media from the event
   const media = extractMediaFromEvent(event);
-  
-  // For NIP-68 Picture events, show title if available
   const title = event.kind === 20 ? event.tags.find(tag => tag[0] === 'title')?.[1] : null;
 
   return (
@@ -107,8 +102,8 @@ function PostCard({ event }: { event: NostrEvent }) {
                 rel="noopener noreferrer"
                 className={`font-semibold text-sm hover:underline ${
                   hasRealName 
-                    ? "text-purple-600 hover:text-purple-700" 
-                    : "text-gray-600 hover:text-gray-700"
+                    ? "text-primary" 
+                    : "text-muted-foreground"
                 }`}
               >
                 {authorName}
@@ -126,25 +121,20 @@ function PostCard({ event }: { event: NostrEvent }) {
               </a>
             </div>
             
-            {/* Show title for NIP-68 Picture events */}
             {title && (
               <h3 className="font-medium text-base mb-2">{title}</h3>
             )}
             
-            {/* Content */}
             {event.content && (
               <div className="text-sm leading-relaxed mb-3">
                 {event.kind === 20 ? (
-                  // For NIP-68, content is description, show as-is
                   <div className="whitespace-pre-wrap break-words">{event.content}</div>
                 ) : (
-                  // For regular notes, use NoteContent for rich rendering
                   <NoteContent event={event} hiddenUrls={media.map(m => m.url)} />
                 )}
               </div>
             )}
             
-            {/* Media Display */}
             <MediaDisplay media={media} />
             
             <div className="flex items-center gap-2 mt-3 pt-3 border-t">
@@ -152,7 +142,7 @@ function PostCard({ event }: { event: NostrEvent }) {
               <span className="text-xs text-muted-foreground">NostrValley</span>
               {media.length > 0 && (
                 <span className="text-xs text-muted-foreground">
-                  • {media.length} media item{media.length !== 1 ? 's' : ''}
+                  &bull; {media.length} media item{media.length !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
@@ -170,7 +160,6 @@ export default function Community() {
     rootMargin: '200px'
   });
 
-  // Auto-load more when intersection observer triggers
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = feed;
   React.useEffect(() => {
     if (isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -180,24 +169,21 @@ export default function Community() {
 
   useSeoMeta({
     title: 'Community Feed - Nostr Valley',
-    description: 'Latest posts from the official Nostr Valley account and #NostrValley community. Discover conference updates, discussions, and content from across the Nostr network.',
+    description: 'Latest posts from the Nostr Valley community. Meetup recaps, discussions, and content from our local Nostr and Bitcoin community in Happy Valley, PA.',
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <div className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-12">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Community Feed</h1>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Community Feed</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Latest posts from the official Nostr Valley account and #NostrValley community across the Nostr network
+            Posts from the Nostr Valley community -- meetup recaps, discussions, and updates from across the Nostr network
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {/* Feed */}
           <div>
             {feed.isLoading ? (
               <div className="space-y-6">
@@ -226,10 +212,8 @@ export default function Community() {
                   <PostCard key={event.id} event={event} />
                 ))}
                 
-                {/* Auto-load trigger point */}
                 <div ref={loadMoreRef} className="h-4" />
                 
-                {/* Loading indicator or manual load button */}
                 {feed.hasNextPage && (
                   <div className="flex justify-center pt-6">
                     {feed.isFetchingNextPage ? (
@@ -268,6 +252,6 @@ export default function Community() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
