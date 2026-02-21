@@ -78,7 +78,7 @@ const Index = () => {
               <img
                 src="/nv-logo.png"
                 alt="Nostr Valley"
-                className="w-36 h-36 md:w-48 md:h-48 object-contain rounded-full shadow-2xl ring-4 ring-primary/20"
+                className="w-52 h-52 md:w-72 md:h-72 object-contain rounded-full shadow-2xl ring-4 ring-primary/20"
               />
             </div>
 

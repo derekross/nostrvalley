@@ -4,7 +4,7 @@
   "description": "A monthly Nostr and Bitcoin meetup in Happy Valley, Pennsylvania. Join us to learn, connect, and grow the local freedom tech community.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#13111d",
   "theme_color": "#667eea",
   "icons": [
     {
