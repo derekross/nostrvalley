@@ -378,3 +378,7 @@ When reporting bugs, please include:
 **Built with ❤️ for the Nostr community**
 
 Nostr Valley represents the future of decentralized conferences - where community, technology, and freedom of expression come together on the Nostr protocol.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 or later — see the [LICENSE](LICENSE) file for details.
