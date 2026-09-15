@@ -9,6 +9,7 @@ import { Layout } from '@/components/Layout';
 import { NoteContent } from '@/components/NoteContent';
 import { RSVPDialog } from '@/components/RSVPDialog';
 import { EventFacts } from '@/components/EventFacts';
+import { ScheduleNote } from '@/components/FeaturedSpeakers';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
@@ -194,6 +195,7 @@ export default function Schedule() {
                 <div className="p-6 md:p-8 space-y-6">
                   <EventFacts compact />
                   <p className="text-muted-foreground">{e.tagline}</p>
+                  <ScheduleNote />
                   <div className="flex flex-col sm:flex-row gap-3">
                     <RSVPDialog calendarEvent={rsvpEvent}>
                       <Button>RSVP with Nostr</Button>
@@ -205,8 +207,8 @@ export default function Schedule() {
                       </a>
                     </Button>
                     <Button variant="ghost" asChild>
-                      <Link to="/#program">
-                        Program
+                      <Link to="/speakers">
+                        Speakers
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Link>
                     </Button>

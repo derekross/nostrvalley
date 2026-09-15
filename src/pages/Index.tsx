@@ -8,7 +8,6 @@ import { Footer } from '@/components/Footer';
 import { RSVPDialog } from '@/components/RSVPDialog';
 import { EventFacts } from '@/components/EventFacts';
 import { FeaturedSpeakers } from '@/components/FeaturedSpeakers';
-import { EventProgram } from '@/components/EventProgram';
 import { useNostrValleyMedia } from '@/hooks/useNostrValleyFeed';
 import { useNostrValleyEvents } from '@/hooks/useCalendarEvents';
 import { findEventForDate } from '@/lib/calendarEvents';
@@ -86,9 +85,6 @@ const Index = () => {
       {/* Featured speakers */}
       <FeaturedSpeakers />
 
-      {/* Program */}
-      <EventProgram />
-
       {/* About */}
       <section className="py-14 md:py-20">
         <div className="container mx-auto px-4">
@@ -102,8 +98,8 @@ const Index = () => {
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Bitcoiners, developers, creators, students, and curious newcomers. No gatekeeping, no
-                jargon walls. Just talks, demos, a panel, and good conversation at a brewery. You don't
-                need to be an expert; just show up.
+                jargon walls. Just talks, demos, and good conversation at a brewery. You don't need
+                to be an expert; just show up.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button variant="outline" asChild>

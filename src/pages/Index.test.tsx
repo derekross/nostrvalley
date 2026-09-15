@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { TestApp } from '@/test/TestApp';
+import { SPEAKERS_2026 } from '@/data/nostrValley2026';
 import Index from './Index';
 
 describe('Index', () => {
@@ -24,25 +25,22 @@ describe('Index', () => {
     expect(screen.getAllByText(/State College, Pennsylvania/).length).toBeGreaterThan(0);
 
     // Who
-    for (const name of ['Arkinox', 'Fundamentals', 'Mani', 'TKay', 'Seth', 'Derek', 'Open Mike']) {
-      expect(screen.getAllByText(name).length).toBeGreaterThan(0);
+    for (const speaker of SPEAKERS_2026) {
+      expect(screen.getAllByText(speaker.name).length).toBeGreaterThan(0);
     }
-    expect(screen.getAllByText(/Panel Discussion/).length).toBeGreaterThan(0);
 
     // RSVP is present
     expect(screen.getAllByRole('button', { name: /RSVP with Nostr/i }).length).toBeGreaterThan(0);
   });
 
-  it('shows the program without session times', () => {
+  it('marks the schedule as TBD and shows no session times', () => {
     render(
       <TestApp>
         <Index />
       </TestApp>,
     );
 
-    expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
-    expect(screen.getAllByText('Topic TBA').length).toBeGreaterThan(0);
-    // No per-talk clock times like "1:30 PM" anywhere on the page besides the event window.
+    expect(screen.getAllByText(/Schedule TBD/).length).toBeGreaterThan(0);
     const clockTimes = screen.queryAllByText(/\b\d{1,2}:\d{2}\s?(AM|PM)\b/);
     expect(clockTimes.every((el) => el.textContent?.includes('12:00 PM – 4:00 PM'))).toBe(true);
   });

@@ -6,6 +6,8 @@ export interface ResolvedSpeakerProfile {
   name: string;
   image?: string;
   bio?: string;
+  /** NIP-05 identifier from the Nostr profile, when set. */
+  nip05?: string;
   links: SpeakerLink[];
   /** njump link to the speaker's Nostr profile, when a pubkey is known. */
   nostrProfileUrl?: string;
@@ -29,6 +31,7 @@ export function useSpeakerProfile(speaker: Speaker): ResolvedSpeakerProfile {
     name: speaker.name,
     image: speaker.image ?? metadata?.picture,
     bio: speaker.bio ?? metadata?.about,
+    nip05: metadata?.nip05,
     links,
     nostrProfileUrl: speaker.pubkey
       ? `https://njump.me/${nip19.npubEncode(speaker.pubkey)}`

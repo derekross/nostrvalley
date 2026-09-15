@@ -26,7 +26,7 @@ export interface Speaker {
   id: string;
   /** Display name or handle exactly as it should appear on the site. */
   name: string;
-  /** Talk title. Omit when the topic has not been announced. */
+  /** Optional talk title, shown under the name when set. */
   talkTitle?: string;
   /** Whether the speaker is confirmed for the lineup. */
   status: SpeakerStatus;
@@ -38,14 +38,6 @@ export interface Speaker {
   bio?: string;
   /** Extra links (website, project, etc). */
   links?: SpeakerLink[];
-}
-
-export interface PanelSession {
-  title: string;
-  /** Topic description. Omit while the topic is still to be announced. */
-  topic?: string;
-  /** Panelists, when announced. */
-  participants?: Speaker[];
 }
 
 export interface AnnualEvent {
@@ -114,70 +106,60 @@ export const NOSTR_VALLEY_2026: AnnualEvent = {
  *
  * Note: "Open Mike" is a person's handle and a featured speaker,
  * not an open-mic session.
- *
- * Pubkeys are intentionally left unset until confirmed by the organizers.
- * For reference, the Nostr Valley account's own "Nostr Valley 2.0" calendar
- * event (Oct 18, 2025) tagged these participants, which look like the same
- * people. Confirm each one, then set `pubkey: npubToHex('npub1...')`:
- *
- *   arkinox   npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w
- *   ManiMe    npub1manlnflyzyjhgh970t8mmngrdytcp3jrmaa66u846ggg7t20cgqqvyn9tn
- *   TKay      npub1nje4ghpkjsxe5thcd4gdt3agl2usxyxv3xxyx39ul3xgytl5009q87l02j
- *   Seth      npub15u3cqhx6vuj3rywg0ph5mfv009lxja6cyvqn2jagaydukq6zmjwqex05rq
- *   Derek     npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424
- *   OpenMike  npub1a6c3jcdj23ptzcuflek8a04f4hc2cdkat95pd6n3r8jjrwyzrw0q43lfrr
- *
- * No prior-event match was found for Fundamentals.
  */
 export const SPEAKERS_2026: Speaker[] = [
   {
-    id: 'arkinox',
-    name: 'Arkinox',
-    talkTitle: 'Fanfares',
-    status: 'confirmed',
-  },
-  {
-    id: 'fundamentals',
-    name: 'Fundamentals',
-    talkTitle: 'Math Sovereignty',
-    status: 'confirmed',
-  },
-  {
-    id: 'mani',
-    name: 'Mani',
-    status: 'confirmed',
-  },
-  {
     id: 'tkay',
     name: 'TKay',
-    talkTitle: 'New Business Model',
     status: 'confirmed',
-  },
-  {
-    id: 'seth',
-    name: 'Seth',
-    talkTitle: 'Simplifying Nostr for User Experience',
-    status: 'confirmed',
-  },
-  {
-    id: 'derek',
-    name: 'Derek',
-    talkTitle: 'The Concord Protocol',
-    status: 'confirmed',
+    pubkey: npubToHex('npub1nje4ghpkjsxe5thcd4gdt3agl2usxyxv3xxyx39ul3xgytl5009q87l02j'),
   },
   {
     id: 'open-mike',
     name: 'Open Mike',
     status: 'confirmed',
+    pubkey: npubToHex('npub1a6c3jcdj23ptzcuflek8a04f4hc2cdkat95pd6n3r8jjrwyzrw0q43lfrr'),
+  },
+  {
+    id: 'manime',
+    name: 'ManiMe',
+    status: 'confirmed',
+    pubkey: npubToHex('npub1manlnflyzyjhgh970t8mmngrdytcp3jrmaa66u846ggg7t20cgqqvyn9tn'),
+  },
+  {
+    id: 'fundamentals',
+    name: 'Fundamentals',
+    status: 'confirmed',
+    pubkey: npubToHex('npub12eml5kmtrjmdt0h8shgg32gye5yqsf2jha6a70jrqt82q9d960sspky99g'),
+  },
+  {
+    id: 'derek-ross',
+    name: 'Derek Ross',
+    status: 'confirmed',
+    pubkey: npubToHex('npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424'),
+  },
+  {
+    id: 'arkinox',
+    name: 'Arkinox',
+    status: 'confirmed',
+    pubkey: npubToHex('npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w'),
+  },
+  {
+    id: 'seth',
+    name: 'Seth',
+    status: 'confirmed',
+    pubkey: npubToHex('npub15u3cqhx6vuj3rywg0ph5mfv009lxja6cyvqn2jagaydukq6zmjwqex05rq'),
+  },
+  {
+    id: 'the-daniel',
+    name: 'The Daniel',
+    status: 'confirmed',
+    pubkey: npubToHex('npub1aeh2zw4elewy5682lxc6xnlqzjnxksq303gwu2npfaxd49vmde6qcq4nwx'),
   },
 ];
 
-export const PANEL_2026: PanelSession = {
-  title: 'Panel Discussion',
-};
-
-/** Label shown for a speaker whose topic has not been announced yet. */
-export const TOPIC_TBA_LABEL = 'Topic TBA';
+/** Shown wherever the schedule would go until session times are announced. */
+export const SCHEDULE_TBD_LABEL = 'Schedule TBD';
 
 /** Initials used by the branded avatar fallback (max two characters). */
 export function speakerInitials(name: string): string {

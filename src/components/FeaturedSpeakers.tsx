@@ -1,18 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Globe, MessageSquare, Mic } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, Globe, Mic } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SpeakerAvatar } from '@/components/SpeakerAvatar';
 import { useSpeakerProfile } from '@/hooks/useSpeakerProfile';
-import {
-  NOSTR_VALLEY_2026,
-  PANEL_2026,
-  SPEAKERS_2026,
-  TOPIC_TBA_LABEL,
-  type PanelSession,
-  type Speaker,
-} from '@/data/nostrValley2026';
+import { NOSTR_VALLEY_2026, SCHEDULE_TBD_LABEL, SPEAKERS_2026, type Speaker } from '@/data/nostrValley2026';
 import { cn } from '@/lib/utils';
 
 interface SpeakerCardProps {
@@ -23,12 +16,13 @@ interface SpeakerCardProps {
 
 export function FeaturedSpeakerCard({ speaker, detailed }: SpeakerCardProps) {
   const profile = useSpeakerProfile(speaker);
-  const hasTopic = Boolean(speaker.talkTitle);
+
+  const nameEl = <h3 className="font-semibold text-lg leading-tight">{profile.name}</h3>;
 
   return (
     <Card className="h-full border-border/60 bg-card/80 hover:border-primary/40 hover:shadow-lg transition-all duration-300">
-      <CardContent className={cn('p-5 md:p-6 flex flex-col h-full', detailed ? 'text-center' : '')}>
-        <div className={cn('flex gap-4', detailed ? 'flex-col items-center' : 'items-center')}>
+      <CardContent className={cn('p-5 md:p-6 flex flex-col h-full min-w-0', detailed && 'text-center items-center')}>
+        <div className={cn('flex gap-4 min-w-0 max-w-full', detailed ? 'flex-col items-center' : 'items-center')}>
           <SpeakerAvatar
             name={profile.name}
             image={profile.image}
@@ -36,20 +30,35 @@ export function FeaturedSpeakerCard({ speaker, detailed }: SpeakerCardProps) {
             fallbackClassName={detailed ? 'text-xl' : 'text-base'}
           />
           <div className="min-w-0">
-            <h3 className="font-semibold text-lg leading-tight">{profile.name}</h3>
-            <p
-              className={cn(
-                'mt-1 text-sm leading-snug',
-                hasTopic ? 'text-foreground/90' : 'text-muted-foreground italic',
-              )}
-            >
-              {hasTopic ? speaker.talkTitle : TOPIC_TBA_LABEL}
-            </p>
+            {profile.nostrProfileUrl && !detailed ? (
+              <a
+                href={profile.nostrProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline underline-offset-4"
+              >
+                {nameEl}
+              </a>
+            ) : (
+              nameEl
+            )}
+            {speaker.talkTitle && (
+              <p className="mt-1 text-sm leading-snug text-foreground/90">{speaker.talkTitle}</p>
+            )}
+            {!detailed && profile.nip05 && (
+              <p className="mt-1 text-xs text-muted-foreground truncate">{profile.nip05}</p>
+            )}
           </div>
         </div>
 
+        {detailed && profile.nip05 && (
+          <p className="w-full text-sm text-muted-foreground mt-2 break-all">{profile.nip05}</p>
+        )}
+
         {detailed && profile.bio && (
-          <p className="text-sm text-muted-foreground mt-4 line-clamp-4">{profile.bio}</p>
+          <p className="w-full text-sm text-muted-foreground mt-3 line-clamp-4 break-words [overflow-wrap:anywhere]">
+            {profile.bio}
+          </p>
         )}
 
         {detailed && (profile.links.length > 0 || profile.nostrProfileUrl) && (
@@ -66,7 +75,7 @@ export function FeaturedSpeakerCard({ speaker, detailed }: SpeakerCardProps) {
               <Button variant="outline" size="sm" asChild>
                 <a href={profile.nostrProfileUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-3 w-3 mr-1" />
-                  Nostr profile
+                  Profile
                 </a>
               </Button>
             )}
@@ -77,21 +86,14 @@ export function FeaturedSpeakerCard({ speaker, detailed }: SpeakerCardProps) {
   );
 }
 
-export function PanelCard({ panel, className }: { panel: PanelSession; className?: string }) {
+/** Small note shown wherever a schedule would appear until times are announced. */
+export function ScheduleNote({ className }: { className?: string }) {
+  if (NOSTR_VALLEY_2026.scheduleFinalized) return null;
   return (
-    <Card className={cn('border-dashed border-primary/30 bg-primary/5', className)}>
-      <CardContent className="p-5 md:p-6 flex items-center gap-4">
-        <div className="h-14 w-14 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-          <MessageSquare className="h-6 w-6 text-primary" />
-        </div>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-lg leading-tight">{panel.title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {panel.topic ?? 'Topic and participants TBA'}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <p className={cn('inline-flex items-center gap-2 text-sm text-muted-foreground', className)}>
+      <Clock className="h-4 w-4 text-primary" />
+      {SCHEDULE_TBD_LABEL}. Talks run between {NOSTR_VALLEY_2026.timeLabel}; the order and times will be announced.
+    </p>
   );
 }
 
@@ -120,23 +122,25 @@ export function FeaturedSpeakers({ showHeading = true, showViewAll = true, class
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-5xl mx-auto">
           {SPEAKERS_2026.map((speaker) => (
             <FeaturedSpeakerCard key={speaker.id} speaker={speaker} />
           ))}
-          <PanelCard panel={PANEL_2026} className="sm:col-span-2 lg:col-span-1" />
         </div>
 
-        {showViewAll && (
-          <div className="text-center mt-8">
-            <Button variant="outline" asChild>
-              <Link to="/speakers">
-                Meet the {NOSTR_VALLEY_2026.year} speakers
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-        )}
+        <div className="text-center mt-8 space-y-4">
+          <ScheduleNote />
+          {showViewAll && (
+            <div>
+              <Button variant="outline" asChild>
+                <Link to="/speakers">
+                  Meet the {NOSTR_VALLEY_2026.year} speakers
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

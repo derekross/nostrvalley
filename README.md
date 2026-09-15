@@ -6,19 +6,18 @@ The website for **Nostr Valley**, an annual gathering in Happy Valley, Pennsylva
 
 - **When:** October 17, 2026, 12:00 PM – 4:00 PM
 - **Where:** Happy Valley Brewing Company, State College, Pennsylvania
-- **Lineup:** see `src/data/nostrValley2026.ts`
+- **Featured speakers:** TKay, Open Mike, ManiMe, Fundamentals, Derek Ross, Arkinox, Seth, The Daniel (schedule TBD)
 
 ### Updating the annual event
 
 All editorial content for the current year lives in `src/data/nostrValley2026.ts`:
 
 - `NOSTR_VALLEY_2026` — name, date, time, venue, tagline, and a `scheduleFinalized` flag
-- `SPEAKERS_2026` — the announced lineup (name, talk title, status, optional `pubkey`, `image`, `bio`, `links`)
-- `PANEL_2026` — the panel session (title, optional `topic` and `participants`)
+- `SPEAKERS_2026` — the announced lineup (name, status, `pubkey`, optional `talkTitle`, `image`, `bio`, `links`)
 
 When a speaker's Nostr `pubkey` is set, their picture, bio, and website are pulled from their Nostr profile automatically. Editorial fields (`image`, `bio`, `links`) override the profile when present. Speakers without an image get a branded gradient avatar with their initials.
 
-Per-session times are intentionally not modelled until the schedule is final; the program shows talks without times and a "Full schedule coming soon" note while `scheduleFinalized` is `false`.
+Per-session times are intentionally not modelled until the schedule is final; the site shows a "Schedule TBD" note while `scheduleFinalized` is `false`.
 
 RSVPs attach to the NIP-52 calendar event published by the Nostr Valley account whose start date matches the annual event date (falling back to the next upcoming Nostr Valley event).
 
@@ -157,7 +156,7 @@ Fetches official Nostr Valley content and media from across the network.
 
 ### 🏠 Home Page
 - Event landing page for the current annual Nostr Valley (date, time, venue, RSVP)
-- Featured speakers and program (talks and panel)
+- Featured speakers (schedule TBD)
 - About, past Nostr Valleys (YouTube archive), sponsors
 
 ### 👥 Community Feed

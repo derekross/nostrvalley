@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Layout } from '@/components/Layout';
 import { SubmitProposalDialog } from '@/components/SubmitProposalDialog';
-import { FeaturedSpeakerCard, PanelCard } from '@/components/FeaturedSpeakers';
+import { FeaturedSpeakerCard, ScheduleNote } from '@/components/FeaturedSpeakers';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
-import { NOSTR_VALLEY_2026, PANEL_2026, SPEAKERS_2026 } from '@/data/nostrValley2026';
+import { NOSTR_VALLEY_2026, SPEAKERS_2026 } from '@/data/nostrValley2026';
 import { nip19 } from 'nostr-tools';
 
 function CommunityMemberCard({ pubkey, role }: { pubkey: string; role?: string }) {
@@ -79,7 +79,7 @@ export default function Speakers() {
 
   useSeoMeta({
     title: `${e.year} Speakers · ${e.name}`,
-    description: `Speakers at ${e.name}, ${e.dateLabel} in ${e.locationLong}: ${SPEAKERS_2026.map((s) => s.name).join(', ')}, plus a panel discussion.`,
+    description: `Speakers at ${e.name}, ${e.dateLabel} in ${e.locationLong}: ${SPEAKERS_2026.map((s) => s.name).join(', ')}.`,
   });
 
   // People tagged as participants on Nostr Valley calendar events (past and present).
@@ -133,15 +133,14 @@ export default function Speakers() {
         {/* 2026 lineup */}
         <section aria-labelledby="lineup-heading">
           <h2 id="lineup-heading" className="sr-only">Announced speakers</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
             {SPEAKERS_2026.map((speaker) => (
               <FeaturedSpeakerCard key={speaker.id} speaker={speaker} detailed />
             ))}
-            <PanelCard panel={PANEL_2026} className="sm:col-span-2 lg:col-span-3" />
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Talk order and times will be posted once the schedule is finalized.
-          </p>
+          <div className="text-center mt-6">
+            <ScheduleNote />
+          </div>
         </section>
 
         {/* Propose a talk */}
