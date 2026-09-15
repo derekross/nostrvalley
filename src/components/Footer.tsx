@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-
-const MEETUP_URL = 'https://www.meetup.com/nostr-valley-bitcoin-decentralized-social-meetup';
+import { MEETUP_URL, NOSTR_VALLEY_NJUMP } from '@/lib/links';
+import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 
 export function Footer() {
   return (
@@ -17,10 +17,10 @@ export function Footer() {
               <h3 className="text-lg font-bold">Nostr Valley</h3>
             </div>
             <p className="text-muted-foreground mb-4">
-              A monthly Nostr and Bitcoin meetup in Happy Valley, Pennsylvania.
+              An annual Nostr and Bitcoin gathering in Happy Valley, Pennsylvania.
             </p>
             <p className="text-muted-foreground">
-              Growing the local community and connecting people to the wider freedom tech ecosystem.
+              {NOSTR_VALLEY_2026.name}: {NOSTR_VALLEY_2026.dateLabel} at {NOSTR_VALLEY_2026.venue}, {NOSTR_VALLEY_2026.locationLong}.
             </p>
           </div>
 
@@ -28,7 +28,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Explore</h4>
             <div className="space-y-2 text-sm">
               <Link to="/schedule" className="block text-muted-foreground hover:text-foreground transition-colors">Events</Link>
-              <Link to="/speakers" className="block text-muted-foreground hover:text-foreground transition-colors">People</Link>
+              <Link to="/speakers" className="block text-muted-foreground hover:text-foreground transition-colors">Speakers</Link>
               <Link to="/community" className="block text-muted-foreground hover:text-foreground transition-colors">Community</Link>
               <Link to="/live" className="block text-muted-foreground hover:text-foreground transition-colors">Live</Link>
             </div>
@@ -38,7 +38,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Connect</h4>
             <div className="space-y-2 text-sm">
               <a
-                href="https://njump.me/npub10hj9rg5gds5x2gk0z0s2jlqnq04jg7g30aj2t5pqzdaaztfactgsnze5ny"
+                href={NOSTR_VALLEY_NJUMP}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-muted-foreground hover:text-foreground transition-colors"

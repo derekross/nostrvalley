@@ -142,7 +142,7 @@ This proposal was submitted via the Nostr Valley website.`;
               </Avatar>
               <div>
                 <p className="font-medium text-sm">{organizerName}</p>
-                <p className="text-xs text-muted-foreground">Conference Organizers</p>
+                <p className="text-xs text-muted-foreground">Nostr Valley Organizers</p>
               </div>
             </div>
 

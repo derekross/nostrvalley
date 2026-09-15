@@ -1,17 +1,19 @@
 import { useSeoMeta } from '@unhead/react';
-import { Users, Globe, ExternalLink } from 'lucide-react';
+import { Users, Globe, ExternalLink, Mic } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Layout } from '@/components/Layout';
 import { SubmitProposalDialog } from '@/components/SubmitProposalDialog';
+import { FeaturedSpeakerCard, PanelCard } from '@/components/FeaturedSpeakers';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
+import { NOSTR_VALLEY_2026, PANEL_2026, SPEAKERS_2026 } from '@/data/nostrValley2026';
 import { nip19 } from 'nostr-tools';
 
-function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
+function CommunityMemberCard({ pubkey, role }: { pubkey: string; role?: string }) {
   const author = useAuthor(pubkey);
   const authorName = author.data?.metadata?.name ?? genUserName(pubkey);
   const authorImage = author.data?.metadata?.picture;
@@ -28,27 +30,27 @@ function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
             <AvatarImage src={authorImage} alt={authorName} />
             <AvatarFallback className="text-lg">{authorName.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
-          
+
           <h3 className="font-semibold text-lg mb-1">{authorName}</h3>
-          
+
           {role && (
             <Badge variant="secondary" className="mb-3">
               {role}
             </Badge>
           )}
-          
+
           {authorNip05 && (
             <p className="text-sm text-muted-foreground mb-3">
               {authorNip05}
             </p>
           )}
-          
+
           {authorAbout && (
             <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
               {authorAbout}
             </p>
           )}
-          
+
           <div className="flex justify-center gap-2">
             {authorWebsite && (
               <Button variant="outline" size="sm" asChild>
@@ -73,29 +75,30 @@ function SpeakerCard({ pubkey, role }: { pubkey: string; role?: string }) {
 
 export default function Speakers() {
   const events = useNostrValleyEvents();
+  const e = NOSTR_VALLEY_2026;
 
   useSeoMeta({
-    title: 'People - Nostr Valley',
-    description: 'Meet the people behind Nostr Valley. Presenters, organizers, and community members who make our meetups happen.',
+    title: `${e.year} Speakers · ${e.name}`,
+    description: `Speakers at ${e.name}, ${e.dateLabel} in ${e.locationLong}: ${SPEAKERS_2026.map((s) => s.name).join(', ')}, plus a panel discussion.`,
   });
 
-  // Extract speakers from event participants
-  const speakers = new Map<string, { role: string; eventTitles: string[] }>();
-  
+  // People tagged as participants on Nostr Valley calendar events (past and present).
+  const participants = new Map<string, { role: string; eventTitles: string[] }>();
+
   events.data?.forEach(event => {
     const parsedEvent = parseCalendarEvent(event);
     parsedEvent.participants.forEach(participant => {
       const key = participant.pubkey;
       const role = participant.role || 'Speaker';
-      const existing = speakers.get(key);
-      
+      const existing = participants.get(key);
+
       if (existing) {
         existing.eventTitles.push(parsedEvent.title);
         if (role !== 'Speaker' && existing.role === 'Speaker') {
           existing.role = role;
         }
       } else {
-        speakers.set(key, {
+        participants.set(key, {
           role,
           eventTitles: [parsedEvent.title]
         });
@@ -103,81 +106,107 @@ export default function Speakers() {
     });
   });
 
-  const speakerList = Array.from(speakers.entries()).map(([pubkey, data]) => ({
+  const participantList = Array.from(participants.entries()).map(([pubkey, data]) => ({
     pubkey,
     ...data
   }));
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">People</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            The presenters, organizers, and community members who make Nostr Valley happen
+      {/* Page header */}
+      <section className="relative overflow-hidden py-12 md:py-16">
+        <div className="absolute inset-0 hero-gradient opacity-[0.04]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
+        <div className="relative container mx-auto px-4 text-center">
+          <Badge variant="secondary" className="text-sm px-4 py-1.5 mb-4">
+            <Mic className="h-3.5 w-3.5 mr-1.5" />
+            {e.name}
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">{e.year} Speakers</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            The lineup for {e.name} on {e.dateLabel} at {e.venue}, {e.locationLong}.
           </p>
         </div>
+      </section>
 
-        {events.isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-6 text-center">
-                  <div className="h-20 w-20 bg-muted rounded-full mx-auto mb-4" />
-                  <div className="h-5 bg-muted rounded w-32 mx-auto mb-2" />
-                  <div className="h-4 bg-muted rounded w-20 mx-auto mb-4" />
-                  <div className="h-3 bg-muted rounded w-full mb-2" />
-                  <div className="h-3 bg-muted rounded w-3/4 mx-auto" />
-                </CardContent>
-              </Card>
+      <div className="container mx-auto px-4 pb-16">
+        {/* 2026 lineup */}
+        <section aria-labelledby="lineup-heading">
+          <h2 id="lineup-heading" className="sr-only">Announced speakers</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+            {SPEAKERS_2026.map((speaker) => (
+              <FeaturedSpeakerCard key={speaker.id} speaker={speaker} detailed />
             ))}
+            <PanelCard panel={PANEL_2026} className="sm:col-span-2 lg:col-span-3" />
           </div>
-        ) : speakerList.length > 0 ? (
-          <>
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            Talk order and times will be posted once the schedule is finalized.
+          </p>
+        </section>
+
+        {/* Propose a talk */}
+        <section className="mt-14 max-w-2xl mx-auto">
+          <Card className="border-dashed">
+            <CardContent className="p-6 md:p-8 text-center">
+              <h2 className="text-xl font-semibold mb-2">Want to present at Nostr Valley?</h2>
+              <p className="text-sm text-muted-foreground mb-5">
+                We're always looking for people to share what they're building or learning. All levels welcome.
+              </p>
+              <SubmitProposalDialog />
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* People from Nostr calendar events */}
+        {(events.isLoading || participantList.length > 0) && (
+          <section className="mt-16">
             <div className="text-center mb-8">
-              <Badge variant="secondary" className="text-sm px-4 py-2">
-                {speakerList.length} {speakerList.length === 1 ? 'Community Member' : 'Community Members'}
-              </Badge>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2 flex items-center justify-center gap-2">
+                <Users className="h-6 w-6 text-primary" />
+                Past Presenters &amp; Organizers
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                People tagged on Nostr Valley calendar events published to Nostr.
+              </p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {speakerList.map(({ pubkey, role }) => (
-                <SpeakerCard key={pubkey} pubkey={pubkey} role={role} />
-              ))}
-            </div>
-            
-            {/* Recent Sessions */}
-            <section className="mt-12">
-              <h2 className="text-2xl font-bold mb-6 text-center">Recent Sessions</h2>
-              <div className="grid gap-4 max-w-2xl mx-auto">
-                {Array.from(new Set(speakerList.flatMap(s => s.eventTitles))).slice(0, 5).map((title, i) => (
-                  <Card key={i} className="border-l-4 border-l-primary">
-                    <CardContent className="p-4">
-                      <h3 className="font-medium">{title}</h3>
+
+            {events.isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-6 text-center">
+                      <div className="h-20 w-20 bg-muted rounded-full mx-auto mb-4" />
+                      <div className="h-5 bg-muted rounded w-32 mx-auto mb-2" />
+                      <div className="h-4 bg-muted rounded w-20 mx-auto mb-4" />
+                      <div className="h-3 bg-muted rounded w-full mb-2" />
+                      <div className="h-3 bg-muted rounded w-3/4 mx-auto" />
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </section>
-          </>
-        ) : (
-          <Card className="border-dashed">
-            <CardContent className="py-16 px-8 text-center">
-              <Users className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-              <h3 className="text-lg font-semibold mb-2">Community Members Coming Soon</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                As we host more meetups, the people who present and participate will show up here.
-              </p>
-              <div className="bg-muted rounded-lg p-6 max-w-lg mx-auto">
-                <h4 className="font-medium mb-2">Want to present at a meetup?</h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  We're always looking for people to share what they're building or learning. All levels welcome.
-                </p>
-                <SubmitProposalDialog />
-              </div>
-            </CardContent>
-          </Card>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {participantList.map(({ pubkey, role }) => (
+                    <CommunityMemberCard key={pubkey} pubkey={pubkey} role={role} />
+                  ))}
+                </div>
+
+                <div className="mt-12">
+                  <h3 className="text-xl font-bold mb-6 text-center">Sessions on Nostr</h3>
+                  <div className="grid gap-4 max-w-2xl mx-auto">
+                    {Array.from(new Set(participantList.flatMap(s => s.eventTitles))).slice(0, 5).map((title, i) => (
+                      <Card key={i} className="border-l-4 border-l-primary">
+                        <CardContent className="p-4">
+                          <h4 className="font-medium">{title}</h4>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
         )}
       </div>
     </Layout>

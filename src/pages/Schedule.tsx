@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react';
-import { Calendar, Clock, MapPin, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar, Clock, MapPin, ExternalLink, ArrowRight, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,12 +8,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Layout } from '@/components/Layout';
 import { NoteContent } from '@/components/NoteContent';
 import { RSVPDialog } from '@/components/RSVPDialog';
+import { EventFacts } from '@/components/EventFacts';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
+import { findEventForDate, isUpcomingCalendarEvent } from '@/lib/calendarEvents';
+import { MEETUP_URL } from '@/lib/links';
+import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 import type { NostrEvent } from '@nostrify/nostrify';
-
-const MEETUP_URL = 'https://www.meetup.com/nostr-valley-bitcoin-decentralized-social-meetup';
 
 function EventCard({ event }: { event: NostrEvent }) {
   const parsedEvent = parseCalendarEvent(event);
@@ -58,9 +61,7 @@ function EventCard({ event }: { event: NostrEvent }) {
 
   const eventDateTime = formatEventDate(parsedEvent.start, parsedEvent.kind);
   const endTime = parsedEvent.end ? formatEndTime(parsedEvent.end, parsedEvent.kind) : null;
-  const isUpcoming = parsedEvent.kind === 31922 
-    ? new Date(parsedEvent.start) >= new Date() 
-    : parseInt(parsedEvent.start) * 1000 >= Date.now();
+  const isUpcoming = isUpcomingCalendarEvent(event);
 
   return (
     <Card className={`event-card ${isUpcoming ? 'border-primary/20' : ''}`}>
@@ -151,24 +152,16 @@ function EventCard({ event }: { event: NostrEvent }) {
 export default function Schedule() {
   const events = useNostrValleyEvents();
 
+  const e = NOSTR_VALLEY_2026;
+
   useSeoMeta({
-    title: 'Events - Nostr Valley',
-    description: 'Upcoming and past Nostr Valley meetups and events in Happy Valley, Pennsylvania.',
+    title: `Events · ${e.name}`,
+    description: `${e.name} is ${e.dateLabel}, ${e.timeLabel} at ${e.venue} in ${e.locationLong}. Plus past Nostr Valley annual events.`,
   });
 
-  const upcomingEvents = events.data?.filter(event => {
-    const parsedEvent = parseCalendarEvent(event);
-    return parsedEvent.kind === 31922 
-      ? new Date(parsedEvent.start) >= new Date() 
-      : parseInt(parsedEvent.start) * 1000 >= Date.now();
-  }) || [];
-
-  const pastEvents = events.data?.filter(event => {
-    const parsedEvent = parseCalendarEvent(event);
-    return parsedEvent.kind === 31922 
-      ? new Date(parsedEvent.start) < new Date() 
-      : parseInt(parsedEvent.start) * 1000 < Date.now();
-  }) || [];
+  const upcomingEvents = events.data?.filter(event => isUpcomingCalendarEvent(event)) || [];
+  const pastEvents = events.data?.filter(event => !isUpcomingCalendarEvent(event)) || [];
+  const rsvpEvent = findEventForDate(events.data, e.date, e.timeZone);
 
   return (
     <Layout>
@@ -179,19 +172,56 @@ export default function Schedule() {
         <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Events</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Monthly meetups, annual gatherings, and everything in between. RSVP with Nostr or register on Meetup.com.
+            The annual Nostr Valley gathering, plus the archive of past years. RSVP with Nostr or register on Meetup.com.
           </p>
         </div>
       </section>
 
       <div className="container mx-auto px-4 pb-16">
         <div className="space-y-10 max-w-3xl mx-auto">
+          {/* This year's annual event */}
+          <section>
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-primary" />
+              This Year
+            </h2>
+            <Card className="overflow-hidden border-primary/30 shadow-lg">
+              <CardContent className="p-0">
+                <div className="gradient-bg p-6 md:p-8 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 mb-2">{e.subtitle}</p>
+                  <h3 className="text-2xl md:text-3xl font-bold">{e.name}</h3>
+                </div>
+                <div className="p-6 md:p-8 space-y-6">
+                  <EventFacts compact />
+                  <p className="text-muted-foreground">{e.tagline}</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <RSVPDialog calendarEvent={rsvpEvent}>
+                      <Button>RSVP with Nostr</Button>
+                    </RSVPDialog>
+                    <Button variant="outline" asChild>
+                      <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Register on Meetup.com
+                      </a>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                      <Link to="/#program">
+                        Program
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Calendar className="h-6 w-6 text-primary" />
-                Upcoming Events
+                Upcoming on Nostr
               </h2>
               <div className="grid gap-6">
                 {upcomingEvents.map((event) => (
@@ -206,7 +236,7 @@ export default function Schedule() {
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Calendar className="h-6 w-6 text-muted-foreground" />
-                Past Events
+                Past Nostr Valleys
               </h2>
               <div className="grid gap-6">
                 {pastEvents.map((event) => (
@@ -246,9 +276,9 @@ export default function Schedule() {
             <Card className="border-dashed">
               <CardContent className="py-16 px-8 text-center">
                 <Calendar className="h-16 w-16 mx-auto text-muted-foreground/50 mb-6" />
-                <h3 className="text-lg font-semibold mb-2">No events scheduled yet</h3>
+                <h3 className="text-lg font-semibold mb-2">No calendar events on Nostr yet</h3>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Upcoming meetups and events will be posted here as they're planned.
+                  The Nostr calendar event for {e.name} will appear here once it's published.
                 </p>
                 <Button asChild>
                   <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
