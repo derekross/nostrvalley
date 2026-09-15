@@ -4,39 +4,31 @@ import { cn } from '@/lib/utils';
 
 interface EventFactsProps {
   className?: string;
-  /** Compact single-row layout (used in cards). */
+  /** Compact layout for cards. */
   compact?: boolean;
 }
 
-/** Date / time / venue block for the annual event. */
+/** Date / time / venue block for the annual event. Venue is primary, city secondary. */
 export function EventFacts({ className, compact }: EventFactsProps) {
   const e = NOSTR_VALLEY_2026;
-  const itemClass = cn(
-    'flex items-center gap-2.5',
-    compact ? 'text-sm' : 'text-base md:text-lg',
-  );
+  const rowClass = cn('flex items-center gap-2.5', compact ? 'text-sm' : 'text-base md:text-lg');
+  const iconClass = 'h-5 w-5 text-primary shrink-0';
 
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-3',
-        compact ? 'sm:flex-row sm:flex-wrap sm:gap-x-6' : 'sm:items-center',
-        className,
-      )}
-    >
-      <div className={itemClass}>
-        <Calendar className="h-5 w-5 text-primary shrink-0" />
+    <div className={cn('flex flex-col', compact ? 'gap-2' : 'gap-2.5 items-center', className)}>
+      <div className={rowClass}>
+        <Calendar className={iconClass} />
         <span className="font-semibold">{e.dateLabel}</span>
       </div>
-      <div className={itemClass}>
-        <Clock className="h-5 w-5 text-primary shrink-0" />
+      <div className={rowClass}>
+        <Clock className={iconClass} />
         <span>{e.timeLabel}</span>
       </div>
-      <div className={itemClass}>
-        <MapPin className="h-5 w-5 text-primary shrink-0" />
-        <span>
+      <div className={cn('flex items-start gap-2.5', compact ? 'text-sm' : 'text-base md:text-lg')}>
+        <MapPin className={cn(iconClass, 'mt-0.5')} />
+        <span className={cn('flex flex-col leading-snug', !compact && 'items-center sm:items-start')}>
           <span className="font-semibold">{e.venue}</span>
-          <span className="text-muted-foreground"> &middot; {e.locationLong}</span>
+          <span className="text-muted-foreground">{e.locationLong}</span>
         </span>
       </div>
     </div>

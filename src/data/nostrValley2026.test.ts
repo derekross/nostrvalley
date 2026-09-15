@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { nip19 } from 'nostr-tools';
-import { NOSTR_VALLEY_2026, SPEAKERS_2026, npubToHex, speakerInitials } from './nostrValley2026';
+import { NOSTR_VALLEY_2026, PANEL_2026, SPEAKERS_2026, npubToHex, speakerInitials } from './nostrValley2026';
 
 describe('NOSTR_VALLEY_2026', () => {
   it('describes the third annual event on October 17, 2026 in State College', () => {
@@ -20,15 +20,15 @@ describe('NOSTR_VALLEY_2026', () => {
 });
 
 describe('SPEAKERS_2026', () => {
-  it('lists the eight announced speakers', () => {
+  it('lists the eight announced speakers in display order', () => {
     expect(SPEAKERS_2026.map((s) => s.name)).toEqual([
-      'TKay',
-      'Open Mike',
-      'ManiMe',
-      'Fundamentals',
-      'Derek Ross',
       'Arkinox',
+      'Fundamentals',
+      'ManiMe',
+      'TKay',
       'Seth',
+      'Derek Ross',
+      'Open Mike',
       'The Daniel',
     ]);
   });
@@ -58,14 +58,28 @@ describe('SPEAKERS_2026', () => {
     }
   });
 
+  it('does not list talk titles', () => {
+    for (const speaker of SPEAKERS_2026) {
+      expect(speaker.talkTitle).toBeUndefined();
+    }
+  });
+
   it('treats Open Mike as a person, not a session', () => {
     expect(SPEAKERS_2026.find((s) => s.id === 'open-mike')?.name).toBe('Open Mike');
   });
 
-  it('does not list talk topics yet', () => {
+  it('does not invent editorial profile data', () => {
     for (const speaker of SPEAKERS_2026) {
-      expect(speaker.talkTitle).toBeUndefined();
+      expect(speaker.image).toBeUndefined();
+      expect(speaker.bio).toBeUndefined();
+      expect(speaker.links).toBeUndefined();
     }
+  });
+
+  it('keeps the panel separate from the speaker list with topic TBA', () => {
+    expect(PANEL_2026.title).toBe('Panel Discussion');
+    expect(PANEL_2026.topic).toBeUndefined();
+    expect(SPEAKERS_2026.some((s) => /panel/i.test(s.name))).toBe(false);
   });
 });
 

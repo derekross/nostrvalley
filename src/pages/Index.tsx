@@ -9,6 +9,7 @@ import { RSVPDialog } from '@/components/RSVPDialog';
 import { EventFacts } from '@/components/EventFacts';
 import { FeaturedSpeakers } from '@/components/FeaturedSpeakers';
 import { useNostrValleyMedia } from '@/hooks/useNostrValleyFeed';
+import { extractMediaFromEvent } from '@/lib/mediaUtils';
 import { useNostrValleyEvents } from '@/hooks/useCalendarEvents';
 import { findEventForDate } from '@/lib/calendarEvents';
 import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
@@ -28,6 +29,12 @@ const Index = () => {
   // next upcoming Nostr Valley event so RSVP keeps working either way.
   const rsvpEvent = findEventForDate(events.data, e.date, e.timeZone);
 
+  // First four #NostrValley posts that actually contain an image.
+  const communityPhotos = (media.data ?? [])
+    .map((event) => ({ id: event.id, url: extractMediaFromEvent(event).find((m) => m.type === 'image')?.url }))
+    .filter((photo): photo is { id: string; url: string } => Boolean(photo.url))
+    .slice(0, 4);
+
   return (
     <Layout hideFooter>
       {/* Hero */}
@@ -38,22 +45,22 @@ const Index = () => {
 
         <div className="relative container mx-auto px-4 pt-12 pb-16 md:pt-20 md:pb-24">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+            {/* Event identity: logo, edition, name */}
             <img
               src="/nv-logo.png"
               alt="Nostr Valley"
-              className="w-28 h-28 md:w-36 md:h-36 object-contain rounded-full shadow-2xl ring-4 ring-primary/20 mb-6"
+              className="w-44 h-44 md:w-56 md:h-56 object-contain rounded-full shadow-2xl ring-4 ring-primary/20 mb-5"
             />
-
-            <p className="text-sm md:text-base font-semibold uppercase tracking-[0.2em] text-primary mb-3">
+            <p className="text-xs sm:text-sm md:text-base font-semibold uppercase tracking-[0.2em] text-primary mb-1.5">
               {e.subtitle}
             </p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight uppercase leading-none mb-6">
-              Nostr Valley <span className="gradient-text">III</span>
+            <h1 className="text-[clamp(1.9rem,9.2vw,3.75rem)] md:text-7xl font-bold tracking-tight uppercase leading-none mb-7 whitespace-nowrap">
+              Nostr Valley <span className="gradient-text whitespace-nowrap">III</span>
             </h1>
 
             <EventFacts className="mb-6" />
 
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8">
               {e.tagline}
             </p>
 
@@ -67,7 +74,7 @@ const Index = () => {
               <Button variant="outline" size="lg" className="px-8" asChild>
                 <a href="#speakers">
                   <Users className="h-4 w-4 mr-2" />
-                  See who's speaking
+                  Meet the Speakers
                 </a>
               </Button>
             </div>
@@ -79,7 +86,7 @@ const Index = () => {
       <FeaturedSpeakers />
 
       {/* About */}
-      <section className="py-14 md:py-20">
+      <section id="about" className="py-14 md:py-20 scroll-mt-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -91,8 +98,8 @@ const Index = () => {
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Bitcoiners, developers, creators, students, and curious newcomers. No gatekeeping, no
-                jargon walls. Just talks, demos, and good conversation at a brewery. You don't need
-                to be an expert; just show up.
+                jargon walls. Just talks, a panel, demos, and good conversation at a brewery. You
+                don't need to be an expert; just show up.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button variant="outline" asChild>
@@ -112,22 +119,17 @@ const Index = () => {
 
             {/* Community photos from #NostrValley */}
             <div className="grid grid-cols-2 gap-3">
-              {media.data && media.data.length > 0 ? (
-                media.data.slice(0, 4).map((event, i) => {
-                  const imageMatch = event.content.match(/https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp)/i);
-                  const imageUrl = imageMatch ? imageMatch[0] : null;
-
-                  return imageUrl ? (
-                    <div key={event.id || i} className="aspect-square rounded-xl overflow-hidden bg-muted">
-                      <img
-                        src={imageUrl}
-                        alt="Photo from a past Nostr Valley, shared with #NostrValley"
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    </div>
-                  ) : null;
-                }).filter(Boolean)
+              {communityPhotos.length > 0 ? (
+                communityPhotos.map((photo) => (
+                  <div key={photo.id} className="aspect-square rounded-xl overflow-hidden bg-muted">
+                    <img
+                      src={photo.url}
+                      alt="Photo from a past Nostr Valley, shared with #NostrValley"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                ))
               ) : (
                 <div className="col-span-2 aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-xl flex items-center justify-center">
                   <div className="text-center">
@@ -283,6 +285,10 @@ const Index = () => {
             <Link to="/speakers" className="hover:text-white transition-colors inline-flex items-center gap-1">
               <Users className="h-3.5 w-3.5" />
               {e.year} Speakers
+            </Link>
+            <span>&bull;</span>
+            <Link to="/live" className="hover:text-white transition-colors">
+              Live
             </Link>
           </div>
         </div>

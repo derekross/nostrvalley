@@ -1,20 +1,27 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Calendar, MessageCircle, Radio, Lightbulb } from 'lucide-react';
+import { Home, Users, Calendar, Info, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { SubmitProposalDialog } from '@/components/SubmitProposalDialog';
 import { cn } from '@/lib/utils';
 
+// Event-oriented primary navigation. Community and Live stay reachable
+// from the footer and homepage; they are not primary before the event.
 const navigationItems = [
   { path: '/', label: 'Home', icon: Home },
-  { path: '/community', label: 'Community', icon: MessageCircle },
-  { path: '/schedule', label: 'Events', icon: Calendar },
   { path: '/speakers', label: 'Speakers', icon: Users },
-  { path: '/live', label: 'Live', icon: Radio },
+  { path: '/schedule', label: 'Schedule', icon: Calendar },
+  { path: '/#about', label: 'About', icon: Info },
 ];
+
+function isActive(pathname: string, hash: string, path: string) {
+  if (path.includes('#')) return `${pathname}${hash}` === path;
+  return pathname === path && !hash;
+}
 
 export function Navigation() {
   const location = useLocation();
+  const { pathname, hash } = location;
 
   return (
     <>
@@ -29,18 +36,18 @@ export function Navigation() {
                 alt="Nostr Valley"
                 className="h-8 w-8 rounded-full object-cover"
               />
-              <span className="text-lg font-bold">Nostr Valley</span>
+              <span className="text-lg font-bold whitespace-nowrap">Nostr Valley</span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
+            <nav className="hidden md:flex items-center space-x-0.5 lg:space-x-1">
               {navigationItems.map(({ path, label, icon: Icon }) => (
                 <Link
                   key={path}
                   to={path}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                    location.pathname === path
+                    "flex items-center gap-2 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap",
+                    isActive(pathname, hash, path)
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
@@ -54,9 +61,9 @@ export function Navigation() {
             {/* Right side */}
             <div className="flex items-center gap-2">
               <SubmitProposalDialog>
-                <Button variant="outline" size="sm" className="hidden sm:flex gap-1.5 text-xs">
+                <Button variant="outline" size="sm" className="hidden sm:flex gap-1.5 text-xs" aria-label="Propose a Talk">
                   <Lightbulb className="h-3.5 w-3.5" />
-                  Propose a Talk
+                  <span className="hidden lg:inline">Propose a Talk</span>
                 </Button>
               </SubmitProposalDialog>
               <LoginArea className="max-w-48 hidden sm:flex" />
@@ -75,7 +82,7 @@ export function Navigation() {
                 to={path}
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[56px]",
-                  location.pathname === path
+                  isActive(pathname, hash, path)
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
