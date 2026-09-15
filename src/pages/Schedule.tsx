@@ -150,7 +150,7 @@ export default function Schedule() {
   const e = NOSTR_VALLEY_2026;
 
   useSeoMeta({
-    title: `Events · ${e.name}`,
+    title: `Schedule · ${e.name}`,
     description: `${e.name} is ${e.dateLabel}, ${e.timeLabel} at ${e.venue} in ${e.locationLong}. Plus past Nostr Valley annual events.`,
   });
 
@@ -165,9 +165,9 @@ export default function Schedule() {
         <div className="absolute inset-0 hero-gradient opacity-[0.04]" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
         <div className="relative container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Events</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Schedule</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            The annual Nostr Valley gathering, plus the archive of past years. RSVP with Nostr.
+            {e.name} runs {e.timeLabel} on {e.dateLabel}. Talk order and session times will be posted here once finalized.
           </p>
         </div>
       </section>

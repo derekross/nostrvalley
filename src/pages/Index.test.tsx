@@ -28,19 +28,21 @@ describe('Index', () => {
     for (const speaker of SPEAKERS_2026) {
       expect(screen.getAllByText(speaker.name).length).toBeGreaterThan(0);
     }
+    expect(screen.getByText('Panel Discussion')).toBeInTheDocument();
 
-    // RSVP is present
+    // What next
     expect(screen.getAllByRole('button', { name: /RSVP with Nostr/i }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('link', { name: /Meet the Speakers/i })).toHaveAttribute('href', '#speakers');
   });
 
-  it('marks the schedule as TBD and shows no session times', () => {
+  it('says the full schedule is coming soon and shows no session times', () => {
     render(
       <TestApp>
         <Index />
       </TestApp>,
     );
 
-    expect(screen.getAllByText(/Schedule TBD/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
     const clockTimes = screen.queryAllByText(/\b\d{1,2}:\d{2}\s?(AM|PM)\b/);
     expect(clockTimes.every((el) => el.textContent?.includes('12:00 PM – 4:00 PM'))).toBe(true);
   });

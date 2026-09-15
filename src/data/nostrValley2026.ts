@@ -26,7 +26,7 @@ export interface Speaker {
   id: string;
   /** Display name or handle exactly as it should appear on the site. */
   name: string;
-  /** Optional talk title, shown under the name when set. */
+  /** Talk title. Omit when the talk has not been announced. */
   talkTitle?: string;
   /** Whether the speaker is confirmed for the lineup. */
   status: SpeakerStatus;
@@ -38,6 +38,14 @@ export interface Speaker {
   bio?: string;
   /** Extra links (website, project, etc). */
   links?: SpeakerLink[];
+}
+
+export interface PanelSession {
+  title: string;
+  /** Topic description. Omit while the topic is still to be announced. */
+  topic?: string;
+  /** Panelists, when announced. */
+  participants?: Speaker[];
 }
 
 export interface AnnualEvent {
@@ -97,7 +105,7 @@ export const NOSTR_VALLEY_2026: AnnualEvent = {
   state: 'Pennsylvania',
   locationShort: 'State College, PA',
   locationLong: 'State College, Pennsylvania',
-  tagline: "Pennsylvania's annual gathering for Nostr, Bitcoin, builders, creators, and the open internet.",
+  tagline: 'Nostr. Bitcoin. Builders. An annual gathering in Happy Valley.',
   scheduleFinalized: false,
 };
 
@@ -109,16 +117,18 @@ export const NOSTR_VALLEY_2026: AnnualEvent = {
  */
 export const SPEAKERS_2026: Speaker[] = [
   {
-    id: 'tkay',
-    name: 'TKay',
+    id: 'arkinox',
+    name: 'Arkinox',
+    talkTitle: 'Fanfares',
     status: 'confirmed',
-    pubkey: npubToHex('npub1nje4ghpkjsxe5thcd4gdt3agl2usxyxv3xxyx39ul3xgytl5009q87l02j'),
+    pubkey: npubToHex('npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w'),
   },
   {
-    id: 'open-mike',
-    name: 'Open Mike',
+    id: 'fundamentals',
+    name: 'Fundamentals',
+    talkTitle: 'Math Sovereignty',
     status: 'confirmed',
-    pubkey: npubToHex('npub1a6c3jcdj23ptzcuflek8a04f4hc2cdkat95pd6n3r8jjrwyzrw0q43lfrr'),
+    pubkey: npubToHex('npub12eml5kmtrjmdt0h8shgg32gye5yqsf2jha6a70jrqt82q9d960sspky99g'),
   },
   {
     id: 'manime',
@@ -127,28 +137,31 @@ export const SPEAKERS_2026: Speaker[] = [
     pubkey: npubToHex('npub1manlnflyzyjhgh970t8mmngrdytcp3jrmaa66u846ggg7t20cgqqvyn9tn'),
   },
   {
-    id: 'fundamentals',
-    name: 'Fundamentals',
+    id: 'tkay',
+    name: 'TKay',
+    talkTitle: 'New Business Model',
     status: 'confirmed',
-    pubkey: npubToHex('npub12eml5kmtrjmdt0h8shgg32gye5yqsf2jha6a70jrqt82q9d960sspky99g'),
-  },
-  {
-    id: 'derek-ross',
-    name: 'Derek Ross',
-    status: 'confirmed',
-    pubkey: npubToHex('npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424'),
-  },
-  {
-    id: 'arkinox',
-    name: 'Arkinox',
-    status: 'confirmed',
-    pubkey: npubToHex('npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w'),
+    pubkey: npubToHex('npub1nje4ghpkjsxe5thcd4gdt3agl2usxyxv3xxyx39ul3xgytl5009q87l02j'),
   },
   {
     id: 'seth',
     name: 'Seth',
+    talkTitle: 'Simplifying Nostr for User Experience',
     status: 'confirmed',
     pubkey: npubToHex('npub15u3cqhx6vuj3rywg0ph5mfv009lxja6cyvqn2jagaydukq6zmjwqex05rq'),
+  },
+  {
+    id: 'derek-ross',
+    name: 'Derek Ross',
+    talkTitle: 'The Concord Protocol',
+    status: 'confirmed',
+    pubkey: npubToHex('npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424'),
+  },
+  {
+    id: 'open-mike',
+    name: 'Open Mike',
+    status: 'confirmed',
+    pubkey: npubToHex('npub1a6c3jcdj23ptzcuflek8a04f4hc2cdkat95pd6n3r8jjrwyzrw0q43lfrr'),
   },
   {
     id: 'the-daniel',
@@ -158,8 +171,16 @@ export const SPEAKERS_2026: Speaker[] = [
   },
 ];
 
+/** The panel discussion, shown separately from the individual talks. */
+export const PANEL_2026: PanelSession = {
+  title: 'Panel Discussion',
+};
+
+/** Label shown for a speaker whose talk has not been announced yet. */
+export const TALK_TBA_LABEL = 'Talk TBA';
+
 /** Shown wherever the schedule would go until session times are announced. */
-export const SCHEDULE_TBD_LABEL = 'Schedule TBD';
+export const SCHEDULE_TBA_LABEL = 'Full schedule coming soon.';
 
 /** Initials used by the branded avatar fallback (max two characters). */
 export function speakerInitials(name: string): string {
