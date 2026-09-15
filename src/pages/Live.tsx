@@ -177,7 +177,7 @@ export default function Live() {
 
   useSeoMeta({
     title: 'Live - Nostr Valley',
-    description: 'Live streams and recordings from Nostr Valley meetups and events.',
+    description: 'Live streams and recordings from Nostr Valley annual events in Happy Valley, Pennsylvania.',
   });
 
   const liveNow = liveEvents.data?.filter(event => event.status === 'live') || [];
@@ -191,7 +191,7 @@ export default function Live() {
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Live Events</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Watch live streams and recordings from Nostr Valley meetups and events
+            Watch live streams and recordings from past and present Nostr Valley events
           </p>
         </div>
 
@@ -263,7 +263,7 @@ export default function Live() {
                   </div>
                   <div className="p-6">
                     <p className="text-sm text-muted-foreground mb-4">
-                      Watch recordings from past Nostr Valley meetups and events
+                      Watch recordings from past Nostr Valley annual events
                     </p>
                     <Button asChild variant="outline" className="w-full sm:w-auto">
                       <a

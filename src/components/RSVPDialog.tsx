@@ -8,8 +8,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { useCreateRSVP, useUserEventRSVP, createCalendarEventCoordinates, type RSVPStatus, type RSVPFreeBusy } from '@/hooks/useEventRSVP';
-import { Calendar, Check, Clock, User } from 'lucide-react';
+import { Calendar, Check, Clock, ExternalLink, User } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
+import { NOSTR_VALLEY_NJUMP } from '@/lib/links';
+import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 import type { NostrEvent } from '@nostrify/nostrify';
 
 interface RSVPDialogProps {
@@ -111,13 +113,22 @@ export function RSVPDialog({ calendarEvent, trigger, children }: RSVPDialogProps
           </DialogHeader>
           <div className="text-center py-6">
             <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Event Details Coming Soon</h3>
+            <h3 className="text-lg font-semibold mb-2">Nostr RSVP opens soon</h3>
             <p className="text-muted-foreground mb-6">
-              Specific event details are being finalized. Check back soon or follow the community feed for updates!
+              The Nostr calendar event for {NOSTR_VALLEY_2026.name} ({NOSTR_VALLEY_2026.dateLabel}) hasn't been
+              published yet. Follow Nostr Valley for the announcement, then come back to RSVP.
             </p>
-            <Button onClick={() => setOpen(false)} variant="outline">
-              Got it
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button asChild>
+                <a href={NOSTR_VALLEY_NJUMP} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Follow on Nostr
+                </a>
+              </Button>
+              <Button onClick={() => setOpen(false)} variant="outline">
+                Got it
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

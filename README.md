@@ -1,6 +1,25 @@
 # Nostr Valley
 
-A modern, decentralized conference platform built on the Nostr protocol. Nostr Valley brings together speakers, attendees, and the global Nostr community for an immersive conference experience powered by decentralized technology.
+The website for **Nostr Valley**, an annual gathering in Happy Valley, Pennsylvania for people building, using, and exploring Nostr, Bitcoin, and the open internet. Built on the Nostr protocol: attendees log in with Nostr, RSVP with NIP-52, and the community feed, live streams, and photos come straight from relays.
+
+## 📅 Nostr Valley III (2026)
+
+- **When:** October 17, 2026, 12:00 PM – 4:00 PM
+- **Where:** Happy Valley Brewing Company, State College, Pennsylvania
+- **Featured speakers:** TKay, Open Mike, ManiMe, Fundamentals, Derek Ross, Arkinox, Seth, The Daniel (schedule TBD)
+
+### Updating the annual event
+
+All editorial content for the current year lives in `src/data/nostrValley2026.ts`:
+
+- `NOSTR_VALLEY_2026` — name, date, time, venue, tagline, and a `scheduleFinalized` flag
+- `SPEAKERS_2026` — the announced lineup (name, status, `pubkey`, optional `talkTitle`, `image`, `bio`, `links`)
+
+When a speaker's Nostr `pubkey` is set, their picture, bio, and website are pulled from their Nostr profile automatically. Editorial fields (`image`, `bio`, `links`) override the profile when present. Speakers without an image get a branded gradient avatar with their initials.
+
+Per-session times are intentionally not modelled until the schedule is final; the site shows a "Schedule TBD" note while `scheduleFinalized` is `false`.
+
+RSVPs attach to the NIP-52 calendar event published by the Nostr Valley account whose start date matches the annual event date (falling back to the next upcoming Nostr Valley event).
 
 ## 🌟 Features
 
@@ -136,9 +155,9 @@ Fetches official Nostr Valley content and media from across the network.
 ## 📱 Pages & Features
 
 ### 🏠 Home Page
-- Welcome message and conference overview
-- Quick navigation to key sections
-- Featured content and announcements
+- Event landing page for the current annual Nostr Valley (date, time, venue, RSVP)
+- Featured speakers (schedule TBD)
+- About, past Nostr Valleys (YouTube archive), sponsors
 
 ### 👥 Community Feed
 - Real-time feed of Nostr Valley content
@@ -155,7 +174,8 @@ Fetches official Nostr Valley content and media from across the network.
 - Speaker information integration
 
 ### 🎤 Speakers
-- Speaker profiles and bios
+- The announced lineup for the current annual event (editorial data + Nostr profiles)
+- Past presenters and organizers derived from NIP-52 calendar event participants
 - Proposal submission system
 - Lightning zap integration for support
 - Contact information and social links
@@ -345,10 +365,6 @@ npm run deploy
 - **Pull Requests**: Code contributions and improvements
 - **Nostr**: Decentralized communication on the protocol
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - **Nostr Protocol**: For creating the foundation of decentralized social media
@@ -377,7 +393,7 @@ When reporting bugs, please include:
 
 **Built with ❤️ for the Nostr community**
 
-Nostr Valley represents the future of decentralized conferences - where community, technology, and freedom of expression come together on the Nostr protocol.
+Nostr Valley is an annual, grassroots gathering where community, technology, and freedom of expression come together on the Nostr protocol.
 
 ## License
 

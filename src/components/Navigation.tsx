@@ -9,7 +9,7 @@ const navigationItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/community', label: 'Community', icon: MessageCircle },
   { path: '/schedule', label: 'Events', icon: Calendar },
-  { path: '/speakers', label: 'People', icon: Users },
+  { path: '/speakers', label: 'Speakers', icon: Users },
   { path: '/live', label: 'Live', icon: Radio },
 ];
 

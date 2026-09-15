@@ -169,7 +169,7 @@ export default function Community() {
 
   useSeoMeta({
     title: 'Community Feed - Nostr Valley',
-    description: 'Latest posts from the Nostr Valley community. Meetup recaps, discussions, and content from our local Nostr and Bitcoin community in Happy Valley, PA.',
+    description: 'Latest posts from the Nostr Valley community. Event recaps, discussions, and content from the Nostr and Bitcoin community around Nostr Valley in Happy Valley, PA.',
   });
 
   return (
@@ -179,7 +179,7 @@ export default function Community() {
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Community Feed</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Posts from the Nostr Valley community -- meetup recaps, discussions, and updates from across the Nostr network
+            Posts from the Nostr Valley community -- event recaps, discussions, and updates from across the Nostr network
           </p>
         </div>
 
