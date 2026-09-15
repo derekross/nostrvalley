@@ -6,7 +6,7 @@ The website for **Nostr Valley**, an annual gathering in Happy Valley, Pennsylva
 
 - **When:** October 17, 2026, 12:00 PM – 4:00 PM
 - **Where:** Happy Valley Brewing Company, State College, Pennsylvania
-- **Featured speakers:** Arkinox (Fanfares), Fundamentals (Math Sovereignty), ManiMe (talk TBA), TKay (New Business Model), Seth (Simplifying Nostr for User Experience), Derek Ross (The Concord Protocol), Open Mike (talk TBA), The Daniel (talk TBA), plus a panel discussion (topic and participants TBA). Full schedule coming soon.
+- **Featured speakers:** Arkinox, Fundamentals, ManiMe, TKay, Seth, Derek Ross, Open Mike, The Daniel, plus a panel discussion (topic and participants TBA). Talk titles and the full schedule are coming soon.
 
 ### Updating the annual event
 

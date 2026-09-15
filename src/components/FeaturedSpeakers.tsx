@@ -10,7 +10,6 @@ import {
   PANEL_2026,
   SCHEDULE_TBA_LABEL,
   SPEAKERS_2026,
-  TALK_TBA_LABEL,
   type PanelSession,
   type Speaker,
 } from '@/data/nostrValley2026';
@@ -53,14 +52,11 @@ export function FeaturedSpeakerCard({ speaker, detailed }: SpeakerCardProps) {
         ) : (
           name
         )}
-        <p
-          className={cn(
-            'mt-1 text-sm leading-snug w-full break-words [overflow-wrap:anywhere]',
-            speaker.talkTitle ? 'text-foreground/90' : 'text-muted-foreground italic',
-          )}
-        >
-          {speaker.talkTitle ?? TALK_TBA_LABEL}
-        </p>
+        {speaker.talkTitle && (
+          <p className="mt-1 text-sm leading-snug w-full break-words [overflow-wrap:anywhere] text-foreground/90">
+            {speaker.talkTitle}
+          </p>
+        )}
 
         {detailed && profile.nip05 && (
           <p className="w-full text-xs text-muted-foreground mt-2 break-all">{profile.nip05}</p>

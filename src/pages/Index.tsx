@@ -49,7 +49,7 @@ const Index = () => {
             <img
               src="/nv-logo.png"
               alt="Nostr Valley"
-              className="w-36 h-36 md:w-44 md:h-44 object-contain rounded-full shadow-2xl ring-4 ring-primary/20 mb-4"
+              className="w-44 h-44 md:w-56 md:h-56 object-contain rounded-full shadow-2xl ring-4 ring-primary/20 mb-5"
             />
             <p className="text-xs sm:text-sm md:text-base font-semibold uppercase tracking-[0.2em] text-primary mb-1.5">
               {e.subtitle}

@@ -15,9 +15,7 @@ describe('FeaturedSpeakers', () => {
     for (const speaker of SPEAKERS_2026) {
       expect(screen.getByText(speaker.name)).toBeInTheDocument();
     }
-    expect(screen.getByText('Fanfares')).toBeInTheDocument();
-    expect(screen.getByText('The Concord Protocol')).toBeInTheDocument();
-    expect(screen.getAllByText('Talk TBA')).toHaveLength(3);
+    expect(screen.queryByText(/Talk TBA/)).not.toBeInTheDocument();
     expect(screen.getByText('Panel Discussion')).toBeInTheDocument();
     expect(screen.getByText('Topic & participants coming soon.')).toBeInTheDocument();
     expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
@@ -35,7 +33,6 @@ describe('FeaturedSpeakers', () => {
 
     const link = screen.getByRole('link', { name: 'Open Mike' });
     expect(link).toHaveAttribute('href', expect.stringMatching(/^https:\/\/njump\.me\/npub1a6c3j/));
-    expect(screen.getByText('Talk TBA')).toBeInTheDocument();
     // Branded initials fallback renders until a profile picture loads.
     expect(screen.getByLabelText('Open Mike')).toHaveTextContent('OM');
   });

@@ -58,16 +58,10 @@ describe('SPEAKERS_2026', () => {
     }
   });
 
-  it('records announced talk titles and leaves unannounced talks undefined', () => {
-    const byId = Object.fromEntries(SPEAKERS_2026.map((s) => [s.id, s]));
-    expect(byId.arkinox.talkTitle).toBe('Fanfares');
-    expect(byId.fundamentals.talkTitle).toBe('Math Sovereignty');
-    expect(byId.tkay.talkTitle).toBe('New Business Model');
-    expect(byId.seth.talkTitle).toBe('Simplifying Nostr for User Experience');
-    expect(byId['derek-ross'].talkTitle).toBe('The Concord Protocol');
-    expect(byId.manime.talkTitle).toBeUndefined();
-    expect(byId['open-mike'].talkTitle).toBeUndefined();
-    expect(byId['the-daniel'].talkTitle).toBeUndefined();
+  it('does not list talk titles', () => {
+    for (const speaker of SPEAKERS_2026) {
+      expect(speaker.talkTitle).toBeUndefined();
+    }
   });
 
   it('treats Open Mike as a person, not a session', () => {

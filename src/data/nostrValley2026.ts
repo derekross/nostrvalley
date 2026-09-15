@@ -119,14 +119,12 @@ export const SPEAKERS_2026: Speaker[] = [
   {
     id: 'arkinox',
     name: 'Arkinox',
-    talkTitle: 'Fanfares',
     status: 'confirmed',
     pubkey: npubToHex('npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w'),
   },
   {
     id: 'fundamentals',
     name: 'Fundamentals',
-    talkTitle: 'Math Sovereignty',
     status: 'confirmed',
     pubkey: npubToHex('npub12eml5kmtrjmdt0h8shgg32gye5yqsf2jha6a70jrqt82q9d960sspky99g'),
   },
@@ -139,21 +137,18 @@ export const SPEAKERS_2026: Speaker[] = [
   {
     id: 'tkay',
     name: 'TKay',
-    talkTitle: 'New Business Model',
     status: 'confirmed',
     pubkey: npubToHex('npub1nje4ghpkjsxe5thcd4gdt3agl2usxyxv3xxyx39ul3xgytl5009q87l02j'),
   },
   {
     id: 'seth',
     name: 'Seth',
-    talkTitle: 'Simplifying Nostr for User Experience',
     status: 'confirmed',
     pubkey: npubToHex('npub15u3cqhx6vuj3rywg0ph5mfv009lxja6cyvqn2jagaydukq6zmjwqex05rq'),
   },
   {
     id: 'derek-ross',
     name: 'Derek Ross',
-    talkTitle: 'The Concord Protocol',
     status: 'confirmed',
     pubkey: npubToHex('npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424'),
   },
@@ -175,9 +170,6 @@ export const SPEAKERS_2026: Speaker[] = [
 export const PANEL_2026: PanelSession = {
   title: 'Panel Discussion',
 };
-
-/** Label shown for a speaker whose talk has not been announced yet. */
-export const TALK_TBA_LABEL = 'Talk TBA';
 
 /** Shown wherever the schedule would go until session times are announced. */
 export const SCHEDULE_TBA_LABEL = 'Full schedule coming soon.';
