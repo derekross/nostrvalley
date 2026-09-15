@@ -14,7 +14,7 @@ import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEve
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
 import { findEventForDate, isUpcomingCalendarEvent } from '@/lib/calendarEvents';
-import { MEETUP_URL } from '@/lib/links';
+import { NOSTR_VALLEY_NJUMP } from '@/lib/links';
 import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 import type { NostrEvent } from '@nostrify/nostrify';
 
@@ -126,12 +126,6 @@ function EventCard({ event }: { event: NostrEvent }) {
                 RSVP with Nostr
               </Button>
             </RSVPDialog>
-            <Button variant="outline" size="sm" asChild>
-              <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                Register on Meetup.com
-              </a>
-            </Button>
           </div>
         )}
         
@@ -173,7 +167,7 @@ export default function Schedule() {
         <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Events</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            The annual Nostr Valley gathering, plus the archive of past years. RSVP with Nostr or register on Meetup.com.
+            The annual Nostr Valley gathering, plus the archive of past years. RSVP with Nostr.
           </p>
         </div>
       </section>
@@ -201,12 +195,6 @@ export default function Schedule() {
                       <Button>RSVP with Nostr</Button>
                     </RSVPDialog>
                     <Button variant="outline" asChild>
-                      <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Register on Meetup.com
-                      </a>
-                    </Button>
-                    <Button variant="ghost" asChild>
                       <Link to="/speakers">
                         Speakers
                         <ArrowRight className="h-4 w-4 ml-2" />
@@ -283,9 +271,9 @@ export default function Schedule() {
                   The Nostr calendar event for {e.name} will appear here once it's published.
                 </p>
                 <Button asChild>
-                  <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
+                  <a href={NOSTR_VALLEY_NJUMP} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    Join on Meetup.com for Notifications
+                    Follow Nostr Valley for updates
                   </a>
                 </Button>
               </CardContent>

@@ -10,7 +10,7 @@ import { LoginArea } from '@/components/auth/LoginArea';
 import { useCreateRSVP, useUserEventRSVP, createCalendarEventCoordinates, type RSVPStatus, type RSVPFreeBusy } from '@/hooks/useEventRSVP';
 import { Calendar, Check, Clock, ExternalLink, User } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
-import { MEETUP_URL } from '@/lib/links';
+import { NOSTR_VALLEY_NJUMP } from '@/lib/links';
 import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 import type { NostrEvent } from '@nostrify/nostrify';
 
@@ -116,13 +116,13 @@ export function RSVPDialog({ calendarEvent, trigger, children }: RSVPDialogProps
             <h3 className="text-lg font-semibold mb-2">Nostr RSVP opens soon</h3>
             <p className="text-muted-foreground mb-6">
               The Nostr calendar event for {NOSTR_VALLEY_2026.name} ({NOSTR_VALLEY_2026.dateLabel}) hasn't been
-              published yet. You can register on Meetup.com now, or check back to RSVP with Nostr.
+              published yet. Follow Nostr Valley for the announcement, then come back to RSVP.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild>
-                <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
+                <a href={NOSTR_VALLEY_NJUMP} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Register on Meetup.com
+                  Follow on Nostr
                 </a>
               </Button>
               <Button onClick={() => setOpen(false)} variant="outline">

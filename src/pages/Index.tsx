@@ -12,7 +12,7 @@ import { useNostrValleyMedia } from '@/hooks/useNostrValleyFeed';
 import { useNostrValleyEvents } from '@/hooks/useCalendarEvents';
 import { findEventForDate } from '@/lib/calendarEvents';
 import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
-import { MEETUP_URL, NOSTR_VALLEY_NJUMP, YOUTUBE_PLAYLIST_EMBED_URL, YOUTUBE_PLAYLIST_URL } from '@/lib/links';
+import { NOSTR_VALLEY_NJUMP, YOUTUBE_PLAYLIST_EMBED_URL, YOUTUBE_PLAYLIST_URL } from '@/lib/links';
 
 const Index = () => {
   const media = useNostrValleyMedia();
@@ -65,19 +65,12 @@ const Index = () => {
                 </Button>
               </RSVPDialog>
               <Button variant="outline" size="lg" className="px-8" asChild>
-                <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Register on Meetup.com
+                <a href="#speakers">
+                  <Users className="h-4 w-4 mr-2" />
+                  See who's speaking
                 </a>
               </Button>
             </div>
-
-            <a
-              href="#speakers"
-              className="mt-8 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              See who's speaking &darr;
-            </a>
           </div>
         </div>
       </section>
@@ -275,23 +268,14 @@ const Index = () => {
               </Button>
             </RSVPDialog>
             <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8" asChild>
-              <a href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
+              <a href={NOSTR_VALLEY_NJUMP} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Register on Meetup.com
+                Follow on Nostr
               </a>
             </Button>
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center text-sm text-white/60">
-            <a
-              href={NOSTR_VALLEY_NJUMP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              Follow on Nostr
-            </a>
-            <span>&bull;</span>
             <Link to="/community" className="hover:text-white transition-colors">
               Community Feed
             </Link>

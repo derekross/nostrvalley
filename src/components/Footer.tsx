@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MEETUP_URL, NOSTR_VALLEY_NJUMP } from '@/lib/links';
+import { NOSTR_VALLEY_NJUMP } from '@/lib/links';
 import { NOSTR_VALLEY_2026 } from '@/data/nostrValley2026';
 
 export function Footer() {
@@ -44,14 +44,6 @@ export function Footer() {
                 className="block text-muted-foreground hover:text-foreground transition-colors"
               >
                 Follow on Nostr
-              </a>
-              <a
-                href={MEETUP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Join on Meetup
               </a>
               <a
                 href="https://grownostr.org"
