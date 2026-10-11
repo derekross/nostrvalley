@@ -20,7 +20,7 @@ describe('NOSTR_VALLEY_2026', () => {
 });
 
 describe('SPEAKERS_2026', () => {
-  it('lists the eight announced speakers in display order', () => {
+  it('lists the nine announced speakers in display order', () => {
     expect(SPEAKERS_2026.map((s) => s.name)).toEqual([
       'Arkinox',
       'Fundamentals',
@@ -30,6 +30,7 @@ describe('SPEAKERS_2026', () => {
       'Derek Ross',
       'Open Mike',
       'The Daniel',
+      'Straycat',
     ]);
   });
 
@@ -50,6 +51,7 @@ describe('SPEAKERS_2026', () => {
       arkinox: 'npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w',
       seth: 'npub15u3cqhx6vuj3rywg0ph5mfv009lxja6cyvqn2jagaydukq6zmjwqex05rq',
       'the-daniel': 'npub1aeh2zw4elewy5682lxc6xnlqzjnxksq303gwu2npfaxd49vmde6qcq4nwx',
+      straycat: 'npub1u5njm6g5h5cpw4wy8xugu62e5s7f6fnysv0sj0z3a8rengt2zqhsxrldq3',
     };
     for (const speaker of SPEAKERS_2026) {
       expect(speaker.status).toBe('confirmed');

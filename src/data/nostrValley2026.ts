@@ -164,6 +164,12 @@ export const SPEAKERS_2026: Speaker[] = [
     status: 'confirmed',
     pubkey: npubToHex('npub1aeh2zw4elewy5682lxc6xnlqzjnxksq303gwu2npfaxd49vmde6qcq4nwx'),
   },
+  {
+    id: 'straycat',
+    name: 'Straycat',
+    status: 'confirmed',
+    pubkey: npubToHex('npub1u5njm6g5h5cpw4wy8xugu62e5s7f6fnysv0sj0z3a8rengt2zqhsxrldq3'),
+  },
 ];
 
 /** The panel discussion, shown separately from the individual talks. */
