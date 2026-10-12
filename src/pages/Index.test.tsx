@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { TestApp } from '@/test/TestApp';
-import { SPEAKERS_2026 } from '@/data/nostrValley2026';
+import { SCHEDULE_2026, SPEAKERS_2026 } from '@/data/nostrValley2026';
 import Index from './Index';
 
 describe('Index', () => {
@@ -18,7 +18,7 @@ describe('Index', () => {
 
     // When
     expect(screen.getAllByText('October 17, 2026').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('12:00 PM – 4:00 PM').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('11:45 AM – 4:10 PM').length).toBeGreaterThan(0);
 
     // Where
     expect(screen.getAllByText('Happy Valley Brewing Company').length).toBeGreaterThan(0);
@@ -35,16 +35,22 @@ describe('Index', () => {
     expect(screen.getByRole('link', { name: /Meet the Speakers/i })).toHaveAttribute('href', '#speakers');
   });
 
-  it('says the full schedule is coming soon and shows no session times', () => {
+  it('shows the 2026 run of show with the lineup graphic', () => {
     render(
       <TestApp>
         <Index />
       </TestApp>,
     );
 
-    expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
-    const clockTimes = screen.queryAllByText(/\b\d{1,2}:\d{2}\s?(AM|PM)\b/);
-    expect(clockTimes.every((el) => el.textContent?.includes('12:00 PM – 4:00 PM'))).toBe(true);
+    expect(screen.queryByText('Full schedule coming soon.')).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'The Schedule' })).toBeInTheDocument();
+    for (const item of SCHEDULE_2026) {
+      expect(screen.getAllByText(item.title).length).toBeGreaterThan(0);
+    }
+    expect(screen.getByText('11:45 AM – 12:05 PM')).toBeInTheDocument();
+    expect(screen.getByText('3:30 – 4:00 PM')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /lineup graphic/i })).toHaveAttribute('src', '/nostr-valley-schedule.png');
+    expect(screen.getByRole('link', { name: /View the Schedule/i })).toHaveAttribute('href', '#schedule');
   });
 
   it('no longer describes Nostr Valley as a monthly meetup', () => {

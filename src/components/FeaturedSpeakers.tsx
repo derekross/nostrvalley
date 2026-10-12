@@ -104,19 +104,48 @@ export function PanelCard({ panel, className }: { panel: PanelSession; className
         </div>
         <div className="min-w-0 text-left">
           <h3 className="font-semibold text-base md:text-lg leading-tight uppercase tracking-wide">{panel.title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {panel.topic ?? 'Topic & participants coming soon.'}
-            {panel.topic && participants ? ` With ${participants}.` : null}
-          </p>
+          {panel.topic ? (
+            <>
+              <p className="mt-1 text-sm md:text-base font-medium text-foreground">{panel.topic}</p>
+              {participants && <p className="mt-0.5 text-sm text-muted-foreground">With {participants}</p>}
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-muted-foreground">Topic & participants coming soon.</p>
+          )}
         </div>
       </CardContent>
     </Card>
   );
 }
 
-/** Small note shown wherever a schedule would appear until times are announced. */
-export function ScheduleNote({ className }: { className?: string }) {
-  if (NOSTR_VALLEY_2026.scheduleFinalized) return null;
+interface ScheduleNoteProps {
+  className?: string;
+  /** Where "See the full schedule" points once published. Hash links stay on the page. */
+  to?: string;
+}
+
+/**
+ * Schedule pointer. Says "coming soon" until the run of show is published,
+ * then links to it.
+ */
+export function ScheduleNote({ className, to = '/schedule' }: ScheduleNoteProps) {
+  if (NOSTR_VALLEY_2026.scheduleFinalized) {
+    const linkClass = cn(
+      'inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline underline-offset-4',
+      className,
+    );
+    const content = (
+      <>
+        <Clock className="h-4 w-4" />
+        See the full schedule
+      </>
+    );
+    return to.startsWith('#') ? (
+      <a href={to} className={linkClass}>{content}</a>
+    ) : (
+      <Link to={to} className={linkClass}>{content}</Link>
+    );
+  }
   return (
     <p className={cn('inline-flex items-center gap-2 text-sm text-muted-foreground', className)}>
       <Clock className="h-4 w-4 text-primary" />
@@ -130,10 +159,12 @@ interface FeaturedSpeakersProps {
   showHeading?: boolean;
   /** Link to the full speakers page. */
   showViewAll?: boolean;
+  /** Target of the schedule link under the grid. */
+  scheduleHref?: string;
   className?: string;
 }
 
-export function FeaturedSpeakers({ showHeading = true, showViewAll = true, className }: FeaturedSpeakersProps) {
+export function FeaturedSpeakers({ showHeading = true, showViewAll = true, scheduleHref, className }: FeaturedSpeakersProps) {
   return (
     <section id="speakers" className={cn('py-14 md:py-20 scroll-mt-16', className)}>
       <div className="container mx-auto px-4">
@@ -160,7 +191,7 @@ export function FeaturedSpeakers({ showHeading = true, showViewAll = true, class
           <PanelCard panel={PANEL_2026} className="mt-4 md:mt-5" />
 
           <div className="text-center mt-8 space-y-4">
-            <ScheduleNote />
+            <ScheduleNote to={scheduleHref} />
             {showViewAll && (
               <div>
                 <Button variant="outline" asChild>

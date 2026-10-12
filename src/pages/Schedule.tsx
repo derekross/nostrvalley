@@ -9,7 +9,7 @@ import { Layout } from '@/components/Layout';
 import { NoteContent } from '@/components/NoteContent';
 import { RSVPDialog } from '@/components/RSVPDialog';
 import { EventFacts } from '@/components/EventFacts';
-import { ScheduleNote } from '@/components/FeaturedSpeakers';
+import { ScheduleAgenda, ScheduleGraphic } from '@/components/ScheduleAgenda';
 import { useNostrValleyEvents, parseCalendarEvent } from '@/hooks/useCalendarEvents';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
@@ -167,7 +167,7 @@ export default function Schedule() {
         <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Schedule</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {e.name} runs {e.timeLabel} on {e.dateLabel}. Talk order and session times will be posted here once finalized.
+            {e.name} runs {e.timeLabel} on {e.dateLabel}. Here's the full run of show.
           </p>
         </div>
       </section>
@@ -189,7 +189,6 @@ export default function Schedule() {
                 <div className="p-6 md:p-8 space-y-6">
                   <EventFacts compact />
                   <p className="text-muted-foreground">{e.tagline}</p>
-                  <ScheduleNote />
                   <div className="flex flex-col sm:flex-row gap-3">
                     <RSVPDialog calendarEvent={rsvpEvent}>
                       <Button>RSVP with Nostr</Button>
@@ -204,6 +203,22 @@ export default function Schedule() {
                 </div>
               </CardContent>
             </Card>
+          </section>
+
+          {/* Run of show */}
+          <section aria-labelledby="run-of-show-heading">
+            <h2 id="run-of-show-heading" className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Clock className="h-6 w-6 text-primary" />
+              Run of Show
+            </h2>
+            <Card>
+              <CardContent className="p-2 sm:p-4 md:p-6">
+                <ScheduleAgenda />
+              </CardContent>
+            </Card>
+            <div className="mt-6 max-w-sm">
+              <ScheduleGraphic />
+            </div>
           </section>
 
           {/* Upcoming Events */}
