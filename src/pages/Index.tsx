@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { RSVPDialog } from '@/components/RSVPDialog';
 import { EventFacts } from '@/components/EventFacts';
 import { FeaturedSpeakers } from '@/components/FeaturedSpeakers';
+import { ScheduleSection } from '@/components/ScheduleAgenda';
 import { useNostrValleyMedia } from '@/hooks/useNostrValleyFeed';
 import { extractMediaFromEvent } from '@/lib/mediaUtils';
 import { useNostrValleyEvents } from '@/hooks/useCalendarEvents';
@@ -77,13 +78,22 @@ const Index = () => {
                   Meet the Speakers
                 </a>
               </Button>
+              <Button variant="ghost" size="lg" className="px-8" asChild>
+                <a href="#schedule">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View the Schedule
+                </a>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured speakers */}
-      <FeaturedSpeakers />
+      <FeaturedSpeakers scheduleHref="#schedule" />
+
+      {/* This year's run of show */}
+      <ScheduleSection className="bg-muted/40" />
 
       {/* About */}
       <section id="about" className="py-14 md:py-20 scroll-mt-16">

@@ -96,9 +96,9 @@ export const NOSTR_VALLEY_2026: AnnualEvent = {
   year: 2026,
   date: '2026-10-17',
   dateLabel: 'October 17, 2026',
-  timeLabel: '12:00 PM – 4:00 PM',
-  startTime: '12:00',
-  endTime: '16:00',
+  timeLabel: '11:45 AM – 4:10 PM',
+  startTime: '11:45',
+  endTime: '16:10',
   timeZone: 'America/New_York',
   venue: 'Happy Valley Brewing Company',
   city: 'State College',
@@ -106,7 +106,7 @@ export const NOSTR_VALLEY_2026: AnnualEvent = {
   locationShort: 'State College, PA',
   locationLong: 'State College, Pennsylvania',
   tagline: 'Nostr. Bitcoin. Builders. An annual gathering in Happy Valley.',
-  scheduleFinalized: false,
+  scheduleFinalized: true,
 };
 
 /**
@@ -166,16 +166,178 @@ export const SPEAKERS_2026: Speaker[] = [
   },
   {
     id: 'straycat',
-    name: 'Straycat',
+    name: 'David Strayhorn',
     status: 'confirmed',
     pubkey: npubToHex('npub1u5njm6g5h5cpw4wy8xugu62e5s7f6fnysv0sj0z3a8rengt2zqhsxrldq3'),
   },
 ];
 
+function speakersById(...ids: string[]): Speaker[] {
+  return ids.map((id) => {
+    const speaker = SPEAKERS_2026.find((s) => s.id === id);
+    if (!speaker) throw new Error(`Unknown speaker id: ${id}`);
+    return speaker;
+  });
+}
+
 /** The panel discussion, shown separately from the individual talks. */
 export const PANEL_2026: PanelSession = {
   title: 'Panel Discussion',
+  topic: 'Vibe Check: The State of Nostr Culture',
+  participants: speakersById('open-mike', 'derek-ross', 'arkinox', 'seth'),
 };
+
+export type ScheduleItemKind = 'logistics' | 'talk' | 'panel';
+
+export interface ScheduleItem {
+  /** Stable identifier used for React keys. */
+  id: string;
+  kind: ScheduleItemKind;
+  /** Local start and end times as HH:MM (24h), venue time zone. */
+  start: string;
+  end: string;
+  title: string;
+  /** Talk number as printed on the lineup graphic (talks only). */
+  number?: number;
+  /** Speakers or hosts for this slot, in display order. */
+  speakers?: Speaker[];
+}
+
+/** The published 2026 run of show, in order. Mirrors /nostr-valley-schedule.png. */
+export const SCHEDULE_2026: ScheduleItem[] = [
+  { id: 'doors', kind: 'logistics', start: '11:45', end: '12:05', title: 'Doors, arrival, check-in' },
+  {
+    id: 'welcome',
+    kind: 'logistics',
+    start: '12:05',
+    end: '12:10',
+    title: 'Welcome',
+    speakers: speakersById('derek-ross', 'seth'),
+  },
+  {
+    id: 'talk-seth',
+    kind: 'talk',
+    number: 1,
+    start: '12:10',
+    end: '12:35',
+    title: 'Nobody Joins a Protocol — What We Learned Building Zap Cooking',
+    speakers: speakersById('seth'),
+  },
+  {
+    id: 'talk-straycat',
+    kind: 'talk',
+    number: 2,
+    start: '12:35',
+    end: '13:00',
+    title: 'Brainstorm: Search Through the People You Trust',
+    speakers: speakersById('straycat'),
+  },
+  {
+    id: 'talk-derek-ross',
+    kind: 'talk',
+    number: 3,
+    start: '13:00',
+    end: '13:25',
+    title: "Something You're Passionate About and Other Stuff",
+    speakers: speakersById('derek-ross'),
+  },
+  {
+    id: 'talk-the-daniel',
+    kind: 'talk',
+    number: 4,
+    start: '13:25',
+    end: '13:50',
+    title: "Don't Lose Your Shit: Defending Your Profile Data from Rogue Clients",
+    speakers: speakersById('the-daniel'),
+  },
+  {
+    id: 'talk-manime',
+    kind: 'talk',
+    number: 5,
+    start: '13:50',
+    end: '14:15',
+    title: 'Bots Need Nostr Even More Than We Do',
+    speakers: speakersById('manime'),
+  },
+  {
+    id: 'talk-fundamentals',
+    kind: 'talk',
+    number: 6,
+    start: '14:15',
+    end: '14:40',
+    title: 'Math sovereignty',
+    speakers: speakersById('fundamentals'),
+  },
+  {
+    id: 'talk-tkay',
+    kind: 'talk',
+    number: 7,
+    start: '14:40',
+    end: '15:05',
+    title: 'The Curious Pair: A Podcast Vending Machine',
+    speakers: speakersById('tkay'),
+  },
+  {
+    id: 'talk-arkinox',
+    kind: 'talk',
+    number: 8,
+    start: '15:05',
+    end: '15:30',
+    title: 'Sell Your Content, Not Your Soul',
+    speakers: speakersById('arkinox'),
+  },
+  {
+    id: 'panel',
+    kind: 'panel',
+    start: '15:30',
+    end: '16:00',
+    title: PANEL_2026.topic!,
+    speakers: PANEL_2026.participants,
+  },
+  {
+    id: 'close',
+    kind: 'logistics',
+    start: '16:00',
+    end: '16:10',
+    title: 'Close',
+    speakers: speakersById('derek-ross', 'seth'),
+  },
+];
+
+/** Footnote printed under the run of show. */
+export const SCHEDULE_FOOTNOTE = 'Talk slots include a 3-minute speaker changeover.';
+
+/** Path of the shareable lineup graphic in /public. */
+export const SCHEDULE_IMAGE_URL = '/nostr-valley-schedule.png';
+
+function parseClock(time: string): { hour: number; minute: number } {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(time);
+  if (!match) throw new Error(`Expected HH:MM, received ${time}`);
+  return { hour: Number(match[1]), minute: Number(match[2]) };
+}
+
+/** "13:05" → "1:05 PM". */
+export function formatClock(time: string): string {
+  const { hour, minute } = parseClock(time);
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${h12}:${String(minute).padStart(2, '0')} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+/** "12:10"–"12:35" → "12:10 – 12:35 PM"; spans across noon keep both meridiems. */
+export function formatTimeRange(start: string, end: string): string {
+  const [startLabel, startMeridiem] = formatClock(start).split(' ');
+  const endLabel = formatClock(end);
+  return endLabel.endsWith(startMeridiem)
+    ? `${startLabel} – ${endLabel}`
+    : `${startLabel} ${startMeridiem} – ${endLabel}`;
+}
+
+/** Slot length in minutes. */
+export function durationMinutes(start: string, end: string): number {
+  const a = parseClock(start);
+  const b = parseClock(end);
+  return b.hour * 60 + b.minute - (a.hour * 60 + a.minute);
+}
 
 /** Shown wherever the schedule would go until session times are announced. */
 export const SCHEDULE_TBA_LABEL = 'Full schedule coming soon.';

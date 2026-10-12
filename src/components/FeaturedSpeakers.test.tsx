@@ -5,7 +5,7 @@ import { FeaturedSpeakerCard, FeaturedSpeakers, PanelCard, ScheduleNote } from '
 import { PANEL_2026, SPEAKERS_2026, type Speaker } from '@/data/nostrValley2026';
 
 describe('FeaturedSpeakers', () => {
-  it('renders every announced speaker, the panel, and the schedule note', () => {
+  it('renders every announced speaker, the panel, and a schedule link', () => {
     render(
       <TestApp>
         <FeaturedSpeakers />
@@ -17,8 +17,9 @@ describe('FeaturedSpeakers', () => {
     }
     expect(screen.queryByText(/Talk TBA/)).not.toBeInTheDocument();
     expect(screen.getByText('Panel Discussion')).toBeInTheDocument();
-    expect(screen.getByText('Topic & participants coming soon.')).toBeInTheDocument();
-    expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
+    expect(screen.getByText('Vibe Check: The State of Nostr Culture')).toBeInTheDocument();
+    expect(screen.getByText('With Open Mike, Derek Ross, Arkinox, Seth')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /See the full schedule/ })).toHaveAttribute('href', '/schedule');
     // No speaker count in the supporting copy.
     expect(screen.queryByText(/\b(eight|8) speakers/i)).not.toBeInTheDocument();
   });
@@ -64,13 +65,27 @@ describe('FeaturedSpeakers', () => {
         />
       </TestApp>,
     );
-    expect(screen.getByText(/Building on Nostr\. With Arkinox, Fundamentals\./)).toBeInTheDocument();
+    expect(screen.getByText('Building on Nostr.')).toBeInTheDocument();
+    expect(screen.getByText('With Arkinox, Fundamentals')).toBeInTheDocument();
+  });
+
+  it('shows a placeholder while the panel topic is unannounced', () => {
+    render(
+      <TestApp>
+        <PanelCard panel={{ title: 'Panel Discussion' }} />
+      </TestApp>,
+    );
+    expect(screen.getByText('Topic & participants coming soon.')).toBeInTheDocument();
   });
 });
 
 describe('ScheduleNote', () => {
-  it('says the full schedule is coming soon while it is not finalized', () => {
-    render(<ScheduleNote />);
-    expect(screen.getByText('Full schedule coming soon.')).toBeInTheDocument();
+  it('links to the published schedule, staying on the page for hash targets', () => {
+    render(
+      <TestApp>
+        <ScheduleNote to="#schedule" />
+      </TestApp>,
+    );
+    expect(screen.getByRole('link', { name: /See the full schedule/ })).toHaveAttribute('href', '#schedule');
   });
 });
